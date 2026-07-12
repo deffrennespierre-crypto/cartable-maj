@@ -1,16 +1,16 @@
 {
-  "version": "6.1.1",
+  "version": "6.2.1",
   "date": "2026-07-12",
   "notes": [
-    "Correcteur d'orthographe"
+    "Correcteur orthographe"
   ],
   "files": {
     "public/index.html": {
-      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
-      "sha256": "37d2342e164ccd476e01fadd2c4f985b817194e64ea2764c9d6c8c4786ccf717"
+      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/Cartable-maj/main/public/index.html",
+      "sha256": "6ae34679137fc818ca6d71f43641178cbc9958d3de42a5a8baf2ef6054cac04c"
     },
     "public/splash.png": {
-      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",
+      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/Cartable-maj/main/public/splash.png",
       "sha256": "62b8b88c39b41a366080b6d742a012652019e507b4a11a85b52d787b47d2fd91"
     }
   }

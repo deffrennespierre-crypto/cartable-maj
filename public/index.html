@@ -1315,10 +1315,22 @@ async function checkUpdate(silent){
     if(cv) cv.textContent = r.current || '5.0.0';
 
     if(r.offline || r.ok === false){
-      if(el) el.textContent = '📴 Vérification impossible (pas de connexion Internet ?)';
+      var why = r.error || '';
+      var hint = '';
+      if(/ENOTFOUND|EAI_AGAIN|ETIMEDOUT|ECONNREFUSED|ENETUNREACH/i.test(why))
+        hint = 'Pas de connexion Internet.';
+      else if(/HTTP 404/.test(why))
+        hint = 'Fichier update.json introuvable à cette adresse (dépôt, branche ou chemin incorrect).';
+      else if(/HTTP 403|HTTP 401/.test(why))
+        hint = 'Accès refusé — le dépôt doit être PUBLIC.';
+      else if(/JSON|Unexpected/i.test(why))
+        hint = 'Le fichier trouvé n\'est pas un update.json valide (as-tu utilisé une adresse github.com au lieu de raw.githubusercontent.com ?).';
+      else hint = why;
+      if(el) el.innerHTML = '📴 Vérification impossible — ' + hint
+        + '<br><span style="font-size:10px;color:var(--tx3);word-break:break-all">' + (r.url||'') + '</span>';
       if(vi) vi.style.display = 'none';
       if(ab) ab.style.display = 'none';
-      if(!silent) _toast('📴 Impossible de vérifier les mises à jour', 'err');
+      if(!silent) _toast('📴 Impossible de vérifier', 'err');
       return;
     }
     if(r.update_available){
