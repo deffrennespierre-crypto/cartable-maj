@@ -2,15 +2,18 @@
   "version": "6.2.1",
   "date": "2026-07-12",
   "notes": [
-    "Correcteur orthographe"
+    "Ajout calculatrice",
+    "Ajout 📈 Traceur de courbes",
+    "∑ Éditeur d'équations",
+    "♿ Accessibilité (Paramètres)"
   ],
   "files": {
     "public/index.html": {
-      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/Cartable-maj/main/public/index.html",
-      "sha256": "6ae34679137fc818ca6d71f43641178cbc9958d3de42a5a8baf2ef6054cac04c"
+      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
+      "sha256": "6991109e0f44ef139ce867ed806b8b4a1a361f396561f2672ad56d0cb7646535"
     },
     "public/splash.png": {
-      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/Cartable-maj/main/public/splash.png",
+      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",
       "sha256": "62b8b88c39b41a366080b6d742a012652019e507b4a11a85b52d787b47d2fd91"
     }
   }
