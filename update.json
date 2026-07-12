@@ -1,16 +1,13 @@
 {
-  "version": "6.2.1",
+  "version": "7.0.0",
   "date": "2026-07-12",
   "notes": [
-    "Ajout calculatrice",
-    "Ajout 📈 Traceur de courbes",
-    "∑ Éditeur d'équations",
-    "♿ Accessibilité (Paramètres)"
+    "Réorganisation des menus Maths et Physiques"
   ],
   "files": {
     "public/index.html": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
-      "sha256": "6991109e0f44ef139ce867ed806b8b4a1a361f396561f2672ad56d0cb7646535"
+      "sha256": "34f0fd77dd12d59792ed4ab052ade35946bd356e4f27f55f225d747c86ad13b0"
     },
     "public/splash.png": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",

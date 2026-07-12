@@ -451,10 +451,12 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         <button class="nav-btn" data-view="journal" data-tip="Journal de bord — notes quotidiennes et humeur">📓 Journal</button>
         <button class="nav-btn" data-view="stats" data-tip="Statistiques — charge de travail et répartition des devoirs">📈 Statistiques</button>
         <button class="nav-btn" onclick="openPomodoro()" data-tip="Minuterie Pomodoro — 25min travail / 5min pause">🍅 Pomodoro</button>
-        <button class="nav-btn" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calculatrice</button>
-        <button class="nav-btn" onclick="openGraphTool()" data-tip="Tracer une courbe de fonction et l'insérer sur la page">📈 Traceur de courbes</button>
-        <button class="nav-btn" onclick="openEqTool()" data-tip="Composer une équation : fractions, racines, puissances">∑ Équations</button>
         <button class="nav-btn" onclick="openGramTool()" data-tip="Nature des mots — colorier verbes, noms, adjectifs…">🇫🇷 Nature des mots</button>
+        <div id="sci-nav" style="display:none">
+          <button class="nav-btn" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calculatrice</button>
+          <button class="nav-btn" onclick="openGraphTool()" data-tip="Tracer une courbe de fonction et l'insérer sur la page">📈 Traceur de courbes</button>
+          <button class="nav-btn" onclick="openEqTool()" data-tip="Composer une équation : fractions, racines, puissances">∑ Équations</button>
+        </div>
       </div>
     </nav>
     <div class="sb-bottom">
@@ -610,11 +612,11 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer un modèle de page (frise, tableau, portée musicale...)">📋 Modèle</button>
           <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
-          <div class="xdiv"></div>
-          <button class="tb-btn" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
-          <button class="tb-btn" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
+          <div class="xdiv sci-tool"></div>
+          <button class="tb-btn sci-tool" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
+          <button class="tb-btn sci-tool" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
           <button class="tb-btn" onclick="openGramTool()" data-tip="Nature des mots — colorier verbes, noms, adjectifs…">🇫🇷 Grammaire</button>
-          <button class="tb-btn" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
+          <button class="tb-btn sci-tool" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
           <button class="tb-btn" onclick="saveCanvas(true)" data-tip="Sauvegarder maintenant (sauvegarde automatique toutes les 3s)" style="background:var(--pr);color:#fff;margin-left:auto">💾 Sauvegarder</button>
           <span class="save-ok" id="save-ok">✅ Sauvegardé</span>
         </div>
@@ -693,11 +695,11 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer un modèle de page (frise, tableau, portée musicale...)">📋 Modèle</button>
           <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ex-ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
-          <div class="xdiv"></div>
-          <button class="tb-btn" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
-          <button class="tb-btn" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
+          <div class="xdiv sci-tool"></div>
+          <button class="tb-btn sci-tool" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
+          <button class="tb-btn sci-tool" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
           <button class="tb-btn" onclick="openGramTool()" data-tip="Nature des mots — colorier verbes, noms, adjectifs…">🇫🇷 Grammaire</button>
-          <button class="tb-btn" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
+          <button class="tb-btn sci-tool" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
           <button class="tb-btn" onclick="saveCanvas(true)" data-tip="Sauvegarder maintenant (sauvegarde automatique toutes les 3s)" style="background:var(--pr);color:#fff;margin-left:auto">💾 Sauvegarder</button>
           <span class="ex-save-ok" id="ex-save-ok">✅ Sauvegardé</span>
         </div>
@@ -776,11 +778,11 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer un modèle de page (frise, tableau, portée musicale...)">📋 Modèle</button>
           <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ev-ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
-          <div class="xdiv"></div>
-          <button class="tb-btn" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
-          <button class="tb-btn" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
+          <div class="xdiv sci-tool"></div>
+          <button class="tb-btn sci-tool" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
+          <button class="tb-btn sci-tool" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
           <button class="tb-btn" onclick="openGramTool()" data-tip="Nature des mots — colorier verbes, noms, adjectifs…">🇫🇷 Grammaire</button>
-          <button class="tb-btn" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
+          <button class="tb-btn sci-tool" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
           <button class="tb-btn" onclick="saveCanvas(true)" data-tip="Sauvegarder maintenant (sauvegarde automatique toutes les 3s)" style="background:var(--pr);color:#fff;margin-left:auto">💾 Sauvegarder</button>
           <span class="ex-save-ok" id="ev-save-ok">✅ Sauvegardé</span>
         </div>
@@ -2657,7 +2659,7 @@ async function init(){
   ]);
   const cls=S.settings.classe?(' · '+S.settings.classe):'';document.getElementById('sb-name').textContent=(S.settings.student_name||'Numérique')+cls;
   document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-  setupColorSwatches();initTooltips();_applySpellcheck();loadA11y();renderSubjectFilter();
+  setupColorSwatches();initTooltips();_applySpellcheck();loadA11y();updateSciTools();renderSubjectFilter();
   renderDashboard();renderHomework();renderNotesSubjects();exRenderSubjList();evRenderSubjList();renderSettingsForm();
   updateHwBadge();
   if(S.settings.weather_enabled!==false)loadWeather();
@@ -2694,6 +2696,7 @@ function switchView(v){
     if(c){S.canvas=c;S.ctx=c.getContext('2d');}
     evRenderSubjList();
   }
+  updateSciTools();
   if(v==='dashboard')renderDashboard();
   if(v==='agenda')renderAgenda();
   if(v==='homework')renderHomework();
@@ -3081,7 +3084,7 @@ function renderNotesSubjects(){
     </div>`).join('');
 }
 async function selectSubject(id){
-  S.selSubjectId=id;S.selSessionId=null;renderNotesSubjects();
+  S.selSubjectId=id;S.selSessionId=null;renderNotesSubjects();updateSciTools();
   const sub=S.subjects.find(s=>s.id===id);
   S.lessons=await api.get('/api/lessons?subject_id='+id);
   S.chapters=[];S.sessions=[];
@@ -4231,6 +4234,53 @@ document.addEventListener('mousemove', function(e){
 });
 
 // ═══════════════════════════════════════════════════════════════════
+// OUTILS SCIENTIFIQUES — réservés aux matières maths / physique-chimie
+// ═══════════════════════════════════════════════════════════════════
+const SCI_NAME_RE = /math|physi|chimi/i;
+
+// Une matière est scientifique si son nom le dit, ou si elle a été cochée
+// manuellement dans les Paramètres (S.settings.sci_subjects = [ids]).
+function isSciSubject(sub){
+  if(!sub) return false;
+  const list = (S.settings && S.settings.sci_subjects) || [];
+  if(list.indexOf(sub.id) >= 0) return true;
+  if(list.indexOf('-' + sub.id) >= 0) return false;   // exclusion explicite
+  return SCI_NAME_RE.test(sub.name || '');
+}
+function currentSubject(){
+  let id = null;
+  if(S.view === 'notes')            id = S.selSubjectId;
+  else if(S.view === 'exercises')   id = S.exSelSubjId;
+  else if(S.view === 'evaluations') id = S.evSelSubjId;
+  if(id == null) return null;
+  return (S.subjects || []).find(s => s.id === id) || null;
+}
+// Affiche ou masque les outils scientifiques selon la matière ouverte
+function updateSciTools(){
+  const on = isSciSubject(currentSubject());
+  document.querySelectorAll('.sci-tool').forEach(function(el){
+    el.style.display = on ? '' : 'none';
+  });
+  const nav = document.getElementById('sci-nav');
+  if(nav) nav.style.display = on ? '' : 'none';
+}
+// Bascule scientifique / non scientifique depuis les Paramètres
+function toggleSciSubject(id){
+  const sub = (S.subjects || []).find(s => s.id === id);
+  if(!sub) return;
+  const cur = isSciSubject(sub);
+  let list = ((S.settings.sci_subjects) || []).filter(v => v !== id && v !== '-' + id);
+  // On écrit toujours la décision explicitement : elle prime sur le nom
+  list.push(cur ? ('-' + id) : id);
+  S.settings.sci_subjects = list;
+  api.put('/api/settings', S.settings).catch(function(){});
+  renderSettingsForm();
+  updateSciTools();
+  _toast(cur ? '🔬 ' + sub.name + ' : outils scientifiques désactivés'
+             : '🔬 ' + sub.name + ' : outils scientifiques activés', 'ok');
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // INFOBULLES — une seule boîte, recadrée dans la fenêtre
 // ═══════════════════════════════════════════════════════════════════
 function initTooltips(){
@@ -5288,7 +5338,7 @@ function renderSettingsForm(){
   updateAiUI();
   // Subjects grid
   const stSubj = document.getElementById('st-subjects')||document.getElementById('st-subj');
-  if(stSubj) stSubj.innerHTML = S.subjects.map(s=>`<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;border:1px solid var(--bd)"><div style="width:24px;height:24px;border-radius:6px;background:${s.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">${s.icon}</div><div style="flex:1;font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div><button onclick="deleteSubject(${s.id})" style="background:none;border:none;cursor:pointer;color:var(--er);font-size:11px;padding:1px 4px;opacity:.6" title="Supprimer">🗑</button></div>`).join('');
+  if(stSubj) stSubj.innerHTML = S.subjects.map(s=>`<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;border:1px solid var(--bd)"><div style="width:24px;height:24px;border-radius:6px;background:${s.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">${s.icon}</div><div style="flex:1;font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div><button onclick="toggleSciSubject(${s.id})" style="background:none;border:none;cursor:pointer;font-size:12px;padding:1px 4px;opacity:${isSciSubject(s)?1:.28}" title="${isSciSubject(s)?'Matière scientifique — calculatrice, courbes et équations disponibles. Cliquer pour désactiver.':'Activer les outils scientifiques (calculatrice, courbes, équations) pour cette matière'}">🔬</button><button onclick="deleteSubject(${s.id})" style="background:none;border:none;cursor:pointer;color:var(--er);font-size:11px;padding:1px 4px;opacity:.6" title="Supprimer">🗑</button></div>`).join('');
   const ex = new Set(S.subjects.map(s=>s.name));
   const avail = PRESET_SUBJ.filter(p=>!ex.has(p.name));
   const stPresets = document.getElementById('st-presets');
@@ -5475,7 +5525,7 @@ function exRenderSubjList(){
 }
 
 async function exSelSubj(id){
-  S.exSelSubjId=id;S.exSelSessId=null;exRenderSubjList();
+  S.exSelSubjId=id;updateSciTools();S.exSelSessId=null;exRenderSubjList();
   const sub=S.subjects.find(s=>s.id===id);
   S.exLessons=await api.get('/api/ex-lessons?subject_id='+id);
   S.exChapters=[];S.exSessions=[];
@@ -5629,7 +5679,7 @@ function evToggleFS(){const v=document.getElementById('v-evaluations');const on=
 function evDelCurPage(){deleteCurPage();}
 function evRenderSubjList(){const el=document.getElementById('ev-subj-list');if(!el)return;el.innerHTML=S.subjects.map(s=>`<div class="subj-item ${S.evSelSubjId===s.id?'active':''}" onclick="evSelSubj(${s.id})" title="${s.name}"><div class="subj-ico" style="background:${s.color}">${s.icon}</div><div style="min-width:0"><div style="font-size:11px;font-weight:800;color:${S.evSelSubjId===s.id?s.color:'var(--tx)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div></div></div>`).join('');}
 async function evSelSubj(id){
-  S.evSelSubjId=id;S.evSelSessId=null;evRenderSubjList();
+  S.evSelSubjId=id;updateSciTools();S.evSelSessId=null;evRenderSubjList();
   const sub=S.subjects.find(s=>s.id===id);
   S.evLessons=await api.get('/api/ev-lessons?subject_id='+id);
   S.evChapters=[];S.evSessions=[];
