@@ -1,17 +1,26 @@
 {
-  "version": "7.0.0",
-  "date": "2026-07-12",
+  "version": "7.1.2",
+  "date": "2026-08-14",
   "notes": [
-    "Réorganisation des menus Maths et Physiques"
+    "Ajout lecture vocale",
+    "Ajout ecriture scientifique"
   ],
   "files": {
     "public/index.html": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
-      "sha256": "34f0fd77dd12d59792ed4ab052ade35946bd356e4f27f55f225d747c86ad13b0"
+      "sha256": "87ac3396ab78f37acb39904763b12e5cc3f68328ea2229ff155089c9ac8e8d9a"
     },
     "public/splash.png": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",
       "sha256": "62b8b88c39b41a366080b6d742a012652019e507b4a11a85b52d787b47d2fd91"
+    },
+    "public/docs/Guide-eleve.pdf": {
+      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/docs/Guide-eleve.pdf",
+      "sha256": "b0a934dbb56318f8375dc7ca0d8925524bc0dbe10acc026d82ee04dec9652d40"
+    },
+    "public/docs/Note-parents.pdf": {
+      "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/docs/Note-parents.pdf",
+      "sha256": "13355080864694ee97ae72cddfedb49ec81fe685a26afb0cee006246f2e3632b"
     }
   }
 }
