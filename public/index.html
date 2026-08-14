@@ -119,6 +119,26 @@ body.a11y-cream.dark{--bg:#1C1A2E;--sf:#26243D}
 body.a11y-ruler #a11y-ruler{display:block}
 #a11y-ruler{display:none;position:fixed;left:0;right:0;height:44px;pointer-events:none;z-index:290;
   background:rgba(250,204,21,.16);border-top:2px solid rgba(234,179,8,.55);border-bottom:2px solid rgba(234,179,8,.55)}
+/* ══ ÉDITEUR DE FORMULE À CASES ══ */
+.fx-field{font-family:'Times New Roman',Georgia,serif;font-size:20px;line-height:2.1;
+  min-height:44px;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:#fff;
+  outline:none;color:#1E1B4B}
+.fx-field:focus{border-color:var(--pr)}
+body.dark .fx-field{background:#26243D;color:#E8E6FF}
+.fx-slot{display:inline-block;min-width:14px;min-height:1em;padding:0 2px;vertical-align:middle;
+  border-bottom:1px dotted transparent}
+.fx-slot.fx-empty{min-width:20px;background:rgba(79,70,229,.09);border:1px dashed rgba(79,70,229,.5);
+  border-radius:3px;margin:0 1px}
+.fx-frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px}
+.fx-num,.fx-den{display:block;padding:0 4px;text-align:center;line-height:1.25}
+.fx-bar{display:block;height:1.5px;background:currentColor;width:100%;margin:1px 0}
+.fx-sqrt,.fx-sqrtn{display:inline-flex;align-items:center;vertical-align:middle;margin:0 1px}
+.fx-radsign{font-size:1.15em;margin-right:-2px}
+.fx-rad{border-top:1.5px solid currentColor;padding:0 3px}
+.fx-idx{font-size:.62em;align-self:flex-start;margin-right:-3px}
+.fx-pow,.fx-sub2{display:inline-flex;align-items:baseline;vertical-align:middle}
+.fx-sup{font-size:.68em;vertical-align:super;line-height:1}
+.fx-sub{font-size:.68em;vertical-align:sub;line-height:1}
 /* ── Modal ───────────────────────────────── */
 .modal-bg{position:fixed;inset:0;background:rgba(30,27,75,.4);backdrop-filter:blur(3px);z-index:900;display:flex;align-items:center;justify-content:center;animation:fadeIn .15s}
 .modal{background:var(--sf);border-radius:var(--r);box-shadow:var(--shm);width:90%;max-width:520px;max-height:90vh;overflow-y:auto;animation:slideUp .18s}
@@ -576,6 +596,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="bi btn-xs" onclick="toggleSubjectPanel()" data-tip="Afficher/cacher les matières">📚</button>
           <span id="editor-breadcrumb" style="font-size:11px;color:var(--tx2)">Sélectionne une séance</span>
           <div style="margin-left:auto;display:flex;gap:3px">
+            <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
             <button class="bi btn-xs" id="fullscreen-btn" onclick="toggleFullscreen()" data-tip="Plein écran — masque tous les panneaux" style="display:none">⛶</button>
             <button class="bi btn-xs" id="pgdel-btn" onclick="deleteCurPage()" data-tip="Supprimer la page courante" style="display:none;color:var(--er)">🗑 Pg</button>
@@ -602,6 +623,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn" onclick="importImage()" data-tip="Importer une image (JPG, PNG, GIF) depuis le PC">🖼 Image</button>
           <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📄 PDF</button>
           <button class="tb-btn" id="mic-notes-btn" onclick="startVoiceNote()" data-tip="Dicter du texte à la voix — le résultat s'ajoute sur la page">🎤 Voix</button>
+          <button class="tb-btn" onclick="readAloud()" data-tip="Lire à voix haute le texte sélectionné (ou toute la page)">🔊 Lire</button>
           <select id="bg-sel" onchange="setPageBg(this.value)" data-tip="Fond de page : lignes, petits carreaux, points ou blanc" style="font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--bd);font-family:var(--fn)">
             <option value="lines">📄 Lignes</option>
             <option value="grid">▦ Carreaux</option>
@@ -659,6 +681,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="bi btn-xs" onclick="exToggleSubjPanel()" data-tip="Afficher/cacher les matières">📚</button>
           <span id="ex-editor-breadcrumb" style="font-size:11px;color:var(--tx2)">Sélectionne un exercice</span>
           <div style="margin-left:auto;display:flex;gap:3px">
+            <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
             <button class="bi btn-xs" id="ex-fullscreen-btn" onclick="exToggleFS()" data-tip="Plein écran — masque tous les panneaux" style="display:none">⛶</button>
             <button class="bi btn-xs" id="ex-pgdel-btn" onclick="exDelCurPage()" data-tip="Supprimer la page courante" style="display:none;color:var(--er)">🗑 Pg</button>
@@ -685,6 +708,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn" onclick="importImage()" data-tip="Importer une image (JPG, PNG, GIF) depuis le PC">🖼 Image</button>
           <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📄 PDF</button>
           <button class="tb-btn" id="ex-mic-notes-btn" onclick="startVoiceNote()" data-tip="Dicter du texte à la voix — le résultat s'ajoute sur la page">🎤 Voix</button>
+          <button class="tb-btn" onclick="readAloud()" data-tip="Lire à voix haute le texte sélectionné (ou toute la page)">🔊 Lire</button>
           <select id="ex-bg-sel" onchange="setPageBg(this.value)" data-tip="Fond de page : lignes, petits carreaux, points ou blanc" style="font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--bd);font-family:var(--fn)">
             <option value="lines">📄 Lignes</option>
             <option value="grid">▦ Carreaux</option>
@@ -742,6 +766,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="bi btn-xs" onclick="evToggleSubjPanel()" data-tip="Afficher/cacher les matières">📚</button>
           <span id="ev-editor-breadcrumb" style="font-size:11px;color:var(--tx2)">Sélectionne une évaluation</span>
           <div style="margin-left:auto;display:flex;gap:3px">
+            <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
             <button class="bi btn-xs" id="ev-fullscreen-btn" onclick="evToggleFS()" data-tip="Plein écran — masque tous les panneaux" style="display:none">⛶</button>
             <button class="bi btn-xs" id="ev-pgdel-btn" onclick="evDelCurPage()" data-tip="Supprimer la page courante" style="display:none;color:var(--er)">🗑 Pg</button>
@@ -768,6 +793,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn" onclick="importImage()" data-tip="Importer une image (JPG, PNG, GIF) depuis le PC">🖼 Image</button>
           <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📄 PDF</button>
           <button class="tb-btn" id="ev-mic-notes-btn" onclick="startVoiceNote()" data-tip="Dicter du texte à la voix — le résultat s'ajoute sur la page">🎤 Voix</button>
+          <button class="tb-btn" onclick="readAloud()" data-tip="Lire à voix haute le texte sélectionné (ou toute la page)">🔊 Lire</button>
           <select id="ev-bg-sel" onchange="setPageBg(this.value)" data-tip="Fond de page : lignes, petits carreaux, points ou blanc" style="font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--bd);font-family:var(--fn)">
             <option value="lines">📄 Lignes</option>
             <option value="grid">▦ Carreaux</option>
@@ -958,6 +984,28 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         <div class="stsec">
           <h3>📂 Archives des années passées</h3>
           <div id="archives-list" style="font-size:12px;color:var(--tx3)">Chargement...</div>
+        </div>
+        <div class="stsec">
+          <h3>💾 Sauvegarde de mes données</h3>
+          <div id="bak-warn" style="display:none;padding:10px 12px;border-radius:9px;background:#FEF3C7;
+            border:1px solid #F59E0B66;font-size:12px;color:#92400E;margin-bottom:11px"></div>
+          <p style="font-size:11px;color:var(--tx2);margin:-4px 0 11px;line-height:1.6">
+            Tes cours, devoirs et notes n'existent <b>que sur cette clé USB</b>. Si tu la perds ou qu'elle casse,
+            tout est perdu. Sauvegarde régulièrement dans un fichier que tu ranges ailleurs
+            (Documents, Drive, une autre clé…).
+          </p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <button class="btn btn-primary btn-sm" onclick="downloadBackup()">💾 Sauvegarder mes données</button>
+            <button class="bi btn-xs" onclick="document.getElementById('bak-file').click()"
+              style="font-size:11px">📂 Restaurer une sauvegarde</button>
+            <input type="file" id="bak-file" accept=".json" style="display:none" onchange="restoreBackup(this)">
+            <span id="bak-last" style="font-size:11px;color:var(--tx3);margin-left:auto"></span>
+          </div>
+        </div>
+        <div class="stsec">
+          <h3>📖 Aide</h3>
+          <p style="font-size:12px;color:var(--tx2);margin:-2px 0 9px">Le guide complet de l'application, à ouvrir ou imprimer.</p>
+          <a class="btn btn-secondary btn-sm" href="/docs/Guide-eleve.pdf" target="_blank" style="text-decoration:none">📖 Ouvrir le guide de l'élève</a>
         </div>
         <div class="stsec">
           <h3>♿ Accessibilité &amp; lecture</h3>
@@ -1209,10 +1257,9 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
     <div style="padding:14px">
       <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px" id="eq-struct"></div>
       <div style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:11px" id="eq-syms"></div>
-      <input class="fi" id="eq-input" oninput="eqPreview()" placeholder="Ex : \\frac{-b+\\sqrt{Δ}}{2a}"
-        style="font-family:Consolas,monospace;font-size:13px;margin-bottom:9px">
+      <div id="eq-field" class="fx-field" style="min-height:52px;margin-bottom:9px"></div>
       <div style="font-size:10px;color:var(--tx3);margin-bottom:9px">
-        Fraction <code>\\frac{a}{b}</code> · Racine <code>\\sqrt{a}</code> · Puissance <code>a^{2}</code> · Indice <code>a_{1}</code>
+        Clique une structure, remplis les cases surlignées. <kbd style="font-size:9px">Tab</kbd> passe à la case suivante.
       </div>
       <div style="border:1px solid var(--bd);border-radius:9px;background:#fff;padding:8px;text-align:center">
         <canvas id="eq-prev" width="560" height="130" style="max-width:100%"></canvas>
@@ -1249,6 +1296,48 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
       </div>
       <div id="gram-stats" style="margin-top:9px;font-size:11px;color:var(--tx2)"></div>
     </div>
+  </div>
+</div>
+
+
+<!-- ══ MODE CACHE-CACHE ══ -->
+<div id="rev-bar" style="display:none;position:fixed;top:0;left:0;right:0;z-index:320;
+  background:linear-gradient(90deg,#4F46E5,#7C3AED);color:#fff;padding:9px 16px;
+  align-items:center;gap:14px;box-shadow:0 3px 14px rgba(0,0,0,.22);font-size:13px">
+  <span style="font-weight:900">🙈 Révision</span>
+  <span id="rev-count" style="opacity:.9"></span>
+  <span id="rev-score" style="font-weight:800"></span>
+  <div style="margin-left:auto;display:flex;gap:7px">
+    <button class="bi btn-xs" onclick="revRestart()" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.35)">🔄 Recommencer</button>
+    <button class="bi btn-xs" onclick="revRevealAll()" style="background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.35)">👁 Tout révéler</button>
+    <button class="bi btn-xs" onclick="revStop()" style="background:#fff;color:#4F46E5;font-weight:800">✕ Quitter</button>
+  </div>
+</div>
+<div id="rev-ask" style="display:none;position:absolute;z-index:330;background:var(--bg);
+  border:2px solid var(--pr);border-radius:11px;padding:9px 11px;box-shadow:0 8px 26px rgba(0,0,0,.22)">
+  <div style="font-size:11px;font-weight:800;color:var(--tx2);margin-bottom:7px">Tu avais trouvé ?</div>
+  <div style="display:flex;gap:6px">
+    <button class="bi btn-xs" onclick="revAnswer(true)" style="background:#DCFCE7;color:#166534;border-color:#22C55E;font-weight:800">✓ Oui</button>
+    <button class="bi btn-xs" onclick="revAnswer(false)" style="background:#FEE2E2;color:#991B1B;border-color:#EF4444;font-weight:800">✗ Non</button>
+  </div>
+</div>
+
+
+<!-- ══ MINI-ÉDITEUR DE FORMULE (inline) ══ -->
+<div id="fx-pop" onmousedown="S._rteToolbarFocused=true"
+  style="display:none;position:fixed;z-index:360;background:var(--bg);border:2px solid var(--pr);
+  border-radius:11px;box-shadow:0 10px 30px rgba(0,0,0,.28);padding:10px;width:340px">
+  <div style="font-size:11px;font-weight:800;color:var(--tx2);margin-bottom:7px">Insérer une formule</div>
+  <div id="fx-struct" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px"></div>
+  <div id="fx-syms" style="display:flex;gap:3px;flex-wrap:wrap;margin-bottom:8px;max-height:78px;overflow:auto"></div>
+  <div id="fx-edit" class="fx-field"></div>
+  <div style="font-size:10px;color:var(--tx3);margin:6px 0 8px">
+    Clique une structure, remplis les cases. <kbd style="font-size:9px">Tab</kbd> passe à la case suivante.
+  </div>
+  <div style="display:flex;gap:7px;align-items:center">
+    <button class="bi btn-xs" onclick="fxClear(document.getElementById('fx-edit'))" style="font-size:11px">🗑 Vider</button>
+    <button class="bi btn-xs" onclick="closeFxPop()" style="font-size:11px">Annuler</button>
+    <button class="btn btn-primary btn-sm" onclick="fxInlineInsert()" style="margin-left:auto">↓ Insérer</button>
   </div>
 </div>
 
@@ -2342,6 +2431,7 @@ function handleConnectorClick(x, y){
 function initKeyboardShortcuts(){
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){
+      if(Reader.playing) Reader.stop();
       ['calc-modal','graph-modal','eq-modal','gram-modal'].forEach(function(id){
         const m = document.getElementById(id);
         if(m && m.classList.contains('on')) m.classList.remove('on');
@@ -2659,7 +2749,8 @@ async function init(){
   ]);
   const cls=S.settings.classe?(' · '+S.settings.classe):'';document.getElementById('sb-name').textContent=(S.settings.student_name||'Numérique')+cls;
   document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-  setupColorSwatches();initTooltips();_applySpellcheck();loadA11y();updateSciTools();renderSubjectFilter();
+  setupColorSwatches();initTooltips();_applySpellcheck();loadA11y();updateSciTools();
+  if('speechSynthesis' in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();}; }renderSubjectFilter();
   renderDashboard();renderHomework();renderNotesSubjects();exRenderSubjList();evRenderSubjList();renderSettingsForm();
   updateHwBadge();
   if(S.settings.weather_enabled!==false)loadWeather();
@@ -2678,6 +2769,7 @@ async function init(){
 }
 
 function switchView(v){
+  if(REV.on) revStop();
   S.view=v;
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.getElementById('v-'+v).classList.add('active');
@@ -2700,7 +2792,7 @@ function switchView(v){
   if(v==='dashboard')renderDashboard();
   if(v==='agenda')renderAgenda();
   if(v==='homework')renderHomework();
-  if(v==='settings'){renderSettingsForm();loadArchiveList();loadA11y();}
+  if(v==='settings'){renderSettingsForm();loadArchiveList();loadA11y();_renderBackupInfo();}
   if(v==='journal'){loadJournal().then(renderJournal);}
   if(v==='stats')renderStats();
   // Re-attach tool cursor to correct canvas
@@ -4037,56 +4129,21 @@ function graphInsert(){
 }
 
 // ──────────────── ÉQUATIONS ────────────────
-const EQ_STRUCT = [
-  ['a/b',  '\\frac{}{}',   'Fraction'],
-  ['√a',   '\\sqrt{}',     'Racine carrée'],
-  ['ⁿ√a',  '\\sqrt[3]{}',  'Racine n-ième'],
-  ['aⁿ',   '^{}',          'Puissance'],
-  ['aₙ',   '_{}',          'Indice'],
-  ['( )',  '()',           'Parenthèses'],
-  ['x²',   'x^{2}',        'x au carré']
-];
 function openEqTool(){
-  const st=document.getElementById('eq-struct');
-  if(st && !st._built){
-    st._built=true;
-    EQ_STRUCT.forEach(function(s){
-      const b=document.createElement('button');
-      b.className='ck'; b.textContent=s[0];
-      b.style.cssText='padding:6px 11px;font-size:13px';
-      b.setAttribute('data-tip', s[2]);
-      b.onclick=function(){ eqIns(s[1]); };
-      st.appendChild(b);
-    });
-    const sy=document.getElementById('eq-syms');
-    MATH_SYMBOLS.forEach(function(s){
-      const b=document.createElement('button');
-      b.className='sy'; b.textContent=s[0];
-      b.onclick=function(){ eqIns(s[1]); };
-      sy.appendChild(b);
-    });
-  }
+  const field = document.getElementById('eq-field');
+  fxBuildPalette(document.getElementById('eq-struct'), document.getElementById('eq-syms'), field);
+  if(!field._init){ fxInitField(field, eqPreview); field._init = true; }
   _openTool('eq-modal'); eqPreview();
-  const i=document.getElementById('eq-input'); if(i) setTimeout(()=>i.focus(),60);
+  setTimeout(function(){ field.focus(); }, 60);
 }
 function closeEqTool(){ _closeTool('eq-modal'); }
-function eqIns(txt){
-  const i=document.getElementById('eq-input'); if(!i) return;
-  const a=i.selectionStart||i.value.length, b=i.selectionEnd||a;
-  i.value = i.value.slice(0,a) + txt + i.value.slice(b);
-  // curseur dans la première accolade vide
-  const k = txt.indexOf('{}');
-  i.focus();
-  const pos = (k>=0) ? a + k + 1 : a + txt.length;
-  i.setSelectionRange(pos,pos);
-  eqPreview();
-}
 function eqPreview(){
   const c=document.getElementById('eq-prev'); if(!c) return;
   const ctx=c.getContext('2d');
   ctx.clearRect(0,0,c.width,c.height);
-  const ml=(document.getElementById('eq-input')||{}).value||'';
-  if(!ml.trim()) return;
+  const field=document.getElementById('eq-field');
+  const ml = field ? fxBuildMl(field).trim() : '';
+  if(!ml) return;
   const size=parseInt((document.getElementById('eq-size')||{}).value)||28;
   try{
     const m=mathMeasure(ml, size);
@@ -4100,15 +4157,16 @@ function eqPreview(){
   }catch(e){}
 }
 function eqInsert(){
-  const ml=(document.getElementById('eq-input')||{}).value||'';
-  if(!ml.trim()){ _toast('Compose d\'abord une équation','err'); return; }
+  const field=document.getElementById('eq-field');
+  const ml = field ? fxBuildMl(field).trim() : '';
+  if(!ml){ _toast('Compose d\'abord une équation','err'); return; }
   const size=parseInt((document.getElementById('eq-size')||{}).value)||28;
   const m=mathMeasure(ml,size);
   if(!m.w||!m.h){ _toast('Équation vide','err'); return; }
   const g=pageGeom();
   const ok=_insertObj({tool:'math', x:g.marginX, y:120,
     w:Math.round(m.w), h:Math.round(m.h), ml:ml, size:size, color:S.color||'#1E1B4B'});
-  if(ok) closeEqTool();
+  if(ok){ fxClear(field); closeEqTool(); }
 }
 
 // ──────────────── GRAMMAIRE ────────────────
@@ -4278,6 +4336,652 @@ function toggleSciSubject(id){
   updateSciTools();
   _toast(cur ? '🔬 ' + sub.name + ' : outils scientifiques désactivés'
              : '🔬 ' + sub.name + ' : outils scientifiques activés', 'ok');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SAUVEGARDE / RESTAURATION
+// ═══════════════════════════════════════════════════════════════════
+async function downloadBackup(){
+  try{
+    const data = await api.get('/api/backup');
+    const name = (S.settings.student_name || 'eleve').replace(/[^\w-]/g,'') || 'eleve';
+    const day  = new Date().toISOString().slice(0,10);
+    const blob = new Blob([JSON.stringify(data)], {type:'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'cartable-' + name + '-' + day + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+
+    S.settings.last_backup = new Date().toISOString();
+    api.put('/api/settings', S.settings).catch(function(){});
+    _renderBackupInfo();
+    _toast('✅ Sauvegarde téléchargée — range-la ailleurs que sur la clé !', 'ok');
+  }catch(e){
+    _toast('❌ Échec de la sauvegarde', 'err');
+  }
+}
+
+function restoreBackup(input){
+  const f = input.files && input.files[0];
+  input.value = '';
+  if(!f) return;
+  const rd = new FileReader();
+  rd.onload = async function(){
+    let data;
+    try{ data = JSON.parse(rd.result); }
+    catch(e){ alert("Ce fichier n'est pas lisible.\n\nChoisis un fichier cartable-….json"); return; }
+    if(!data || data.app !== 'mon-cartable'){
+      alert("Ce fichier n'est pas une sauvegarde de Mon Cartable."); return;
+    }
+    const when = data.date ? new Date(data.date).toLocaleString('fr-FR') : 'date inconnue';
+    if(!confirm('⚠️ RESTAURER LA SAUVEGARDE DU ' + when + ' ?\n\n'
+      + "TOUT ce qui se trouve actuellement sur la clé sera REMPLACÉ :\n"
+      + "cours, exercices, évaluations, devoirs, journal.\n\n"
+      + "Cette action est irréversible. Continuer ?")) return;
+    if(!confirm("Dernière confirmation.\n\nLes données actuelles seront définitivement perdues.")) return;
+    try{
+      const r = await api.post('/api/restore', data);
+      if(r && r.ok){
+        alert('✅ Sauvegarde restaurée (' + r.restored.length + ' fichiers).\n\n'
+            + "L'application va se recharger.");
+        location.reload();
+      } else {
+        alert('❌ Échec : ' + ((r && r.error) || 'erreur inconnue'));
+      }
+    }catch(e){
+      alert("❌ Échec de la restauration.\n\nSi le bouton ne fait rien, la clé n'a pas été reconfigurée avec la dernière version. Contacte ton enseignant.");
+    }
+  };
+  rd.readAsText(f);
+}
+
+// Rappel : la dernière sauvegarde commence à dater
+function _renderBackupInfo(){
+  const last = S.settings && S.settings.last_backup;
+  const el   = document.getElementById('bak-last');
+  const warn = document.getElementById('bak-warn');
+  if(!el || !warn) return;
+  if(!last){
+    el.textContent = 'Jamais sauvegardé';
+    warn.style.display = 'block';
+    warn.innerHTML = "⚠️ <b>Tu n'as encore jamais sauvegardé.</b> Si tu perds la clé, tout disparaît.";
+    return;
+  }
+  const d = new Date(last);
+  const days = Math.floor((Date.now() - d.getTime()) / 86400000);
+  el.textContent = 'Dernière sauvegarde : ' + d.toLocaleDateString('fr-FR')
+    + (days === 0 ? " (aujourd'hui)" : days === 1 ? ' (hier)' : ' (il y a ' + days + ' jours)');
+  if(days >= 14){
+    warn.style.display = 'block';
+    warn.innerHTML = '⚠️ <b>Ta dernière sauvegarde date de ' + days + ' jours.</b> Pense à en refaire une.';
+  } else {
+    warn.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MODE CACHE-CACHE — masque les passages surlignés pour se tester
+// ═══════════════════════════════════════════════════════════════════
+const REV = { on:false, revealed:{}, ok:0, ko:0, pending:-1 };
+
+// Les surlignages de la page courante = les « trous »
+function revHoles(){
+  const out = [];
+  gs().forEach(function(s, i){
+    if(s.tool !== 'highlight') return;
+    const b = strokeBBox(s);
+    if(b && b.w > 6 && b.h > 4) out.push({i:i, b:b});
+  });
+  return out;
+}
+
+function revStart(){
+  const holes = revHoles();
+  if(!holes.length){
+    _toast("Surligne d'abord les mots à réviser, puis relance le mode révision", 'err');
+    return;
+  }
+  REV.on = true; REV.revealed = {}; REV.ok = 0; REV.ko = 0; REV.pending = -1;
+  commitText();
+  setTool('select');
+  S.selectedIdx = -1; S.selectedIdxs = [];
+  const bar = document.getElementById('rev-bar');
+  if(bar){ bar.style.display = 'flex'; document.body.style.paddingTop = '38px'; }
+  revUpdateBar();
+  redrawCanvas();
+}
+function revStop(){
+  REV.on = false; REV.pending = -1;
+  const bar = document.getElementById('rev-bar');
+  if(bar){ bar.style.display = 'none'; document.body.style.paddingTop = ''; }
+  const ask = document.getElementById('rev-ask');
+  if(ask) ask.style.display = 'none';
+  redrawCanvas();
+}
+function revRestart(){
+  REV.revealed = {}; REV.ok = 0; REV.ko = 0; REV.pending = -1;
+  const ask = document.getElementById('rev-ask'); if(ask) ask.style.display = 'none';
+  revUpdateBar(); redrawCanvas();
+}
+function revRevealAll(){
+  revHoles().forEach(function(h){ REV.revealed[h.i] = true; });
+  REV.pending = -1;
+  const ask = document.getElementById('rev-ask'); if(ask) ask.style.display = 'none';
+  revUpdateBar(); redrawCanvas();
+}
+function revUpdateBar(){
+  const holes = revHoles();
+  const found = holes.filter(h => REV.revealed[h.i]).length;
+  const c = document.getElementById('rev-count');
+  const s = document.getElementById('rev-score');
+  if(c) c.textContent = found + ' / ' + holes.length + ' révélés';
+  if(s){
+    s.innerHTML = (REV.ok || REV.ko)
+      ? '<span style="color:#BBF7D0">✓ ' + REV.ok + '</span> &nbsp;<span style="color:#FECACA">✗ ' + REV.ko + '</span>'
+        + (found === holes.length && holes.length
+            ? ' &nbsp;·&nbsp; <b>' + Math.round(REV.ok / holes.length * 100) + ' %</b>' : '')
+      : '';
+  }
+}
+
+// Clic sur un cache → on révèle, puis on demande si l'élève avait trouvé
+function revClick(x, y){
+  const holes = revHoles();
+  for(let k = holes.length - 1; k >= 0; k--){
+    const h = holes[k], b = h.b;
+    if(x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h){
+      if(REV.revealed[h.i]) return true;         // déjà révélé
+      REV.revealed[h.i] = true;
+      REV.pending = h.i;
+      revUpdateBar();
+      redrawCanvas();
+      revShowAsk(b);
+      return true;
+    }
+  }
+  return false;
+}
+function revShowAsk(b){
+  const ask = document.getElementById('rev-ask');
+  const eids = activeEditorIds();
+  const wrap = document.getElementById(eids.wrap);
+  if(!ask || !wrap || !S.canvas) return;
+  const cr = S.canvas.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+  const scX = cr.width / S.canvas.width, scY = cr.height / S.canvas.height;
+  wrap.appendChild(ask);
+  ask.style.display = 'block';
+  ask.style.left = ((b.x + b.w / 2) * scX + cr.left - wr.left + wrap.scrollLeft - 60) + 'px';
+  ask.style.top  = ((b.y + b.h) * scY + cr.top - wr.top + wrap.scrollTop + 8) + 'px';
+}
+function revAnswer(good){
+  if(REV.pending >= 0){ if(good) REV.ok++; else REV.ko++; }
+  REV.pending = -1;
+  const ask = document.getElementById('rev-ask'); if(ask) ask.style.display = 'none';
+  revUpdateBar();
+  const holes = revHoles();
+  if(holes.length && holes.every(h => REV.revealed[h.i])){
+    const pct = Math.round(REV.ok / holes.length * 100);
+    setTimeout(function(){
+      _toast(pct >= 80 ? '🎉 ' + pct + ' % — excellent !'
+           : pct >= 50 ? '👍 ' + pct + ' % — continue !'
+           : '💪 ' + pct + ' % — refais un tour', pct >= 50 ? 'ok' : 'info');
+    }, 250);
+  }
+}
+
+// Dessin des caches — PAR-DESSUS tout, sinon le texte resterait lisible
+function revDrawMasks(ctx){
+  if(!REV.on) return;
+  const dark = document.body.classList.contains('dark');
+  revHoles().forEach(function(h, k){
+    if(REV.revealed[h.i]) return;
+    const b = h.b;
+    const r = Math.min(7, b.h / 2);
+    ctx.save();
+    ctx.fillStyle = dark ? '#3B3766' : '#DDD9F0';
+    ctx.strokeStyle = '#7C6FE8';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    if(ctx.roundRect) ctx.roundRect(b.x, b.y, b.w, b.h, r);
+    else ctx.rect(b.x, b.y, b.w, b.h);
+    ctx.fill(); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = dark ? '#B9B2F5' : '#6B5FD6';
+    ctx.font = 'bold ' + Math.max(11, Math.min(16, b.h * 0.6)) + 'px Nunito,sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('?', b.x + b.w / 2, b.y + b.h / 2 + 1);
+    ctx.restore();
+  });
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LECTURE À VOIX HAUTE — synthèse vocale (SpeechSynthesis, hors ligne)
+// Lit le texte sélectionné, met en surbrillance le mot en cours.
+// ═══════════════════════════════════════════════════════════════════
+const Reader = {
+  supported: 'speechSynthesis' in window,
+  utter: null,
+  playing: false,
+  paused: false,
+  rate: 1,
+
+  // Rassemble le texte à lire : sélection navigateur, objets texte, sinon toute la page
+  gatherText(){
+    let t = (window.getSelection ? window.getSelection().toString() : '').trim();
+    if(t) return t;
+    if(typeof _onCanvasView === 'function' && _onCanvasView() && typeof gs === 'function'){
+      const idxs = (S.selectedIdxs && S.selectedIdxs.length) ? S.selectedIdxs
+                 : (S.selectedIdx >= 0 ? [S.selectedIdx] : []);
+      const sel = [];
+      idxs.forEach(function(i){ const s = gs()[i]; if(s && s.tool==='text' && s.text) sel.push(s.text); });
+      if(sel.length) return sel.join('. ');
+      // rien de sélectionné → tout le texte de la page, de haut en bas
+      const all = gs().filter(s => s.tool==='text' && s.text)
+                      .sort((a,b)=>(a.y||0)-(b.y||0))
+                      .map(s=>s.text);
+      if(all.length) return all.join('. ');
+    }
+    // hors canvas : le texte visible de la vue active
+    const view = document.getElementById('v-' + (S.view||''));
+    if(view){ const tx = (view.innerText||'').trim(); if(tx) return tx.slice(0, 6000); }
+    return '';
+  },
+
+  frenchVoice(){
+    const vs = speechSynthesis.getVoices();
+    return vs.find(v => /fr(-|_)?FR/i.test(v.lang))
+        || vs.find(v => /^fr/i.test(v.lang))
+        || vs.find(v => /fr/i.test(v.lang)) || null;
+  },
+
+  toggle(){
+    if(!this.supported){ _toast("La lecture à voix haute n'est pas disponible sur ce navigateur", 'err'); return; }
+    if(this.playing && !this.paused){ this.pause(); return; }
+    if(this.playing && this.paused){ this.resume(); return; }
+    this.start();
+  },
+
+  start(){
+    const text = this.gatherText();
+    if(!text){ _toast('Sélectionne du texte à lire, ou ouvre une page qui en contient', 'err'); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'fr-FR';
+    const v = this.frenchVoice();
+    if(v) u.voice = v;
+    u.rate = this.rate;
+    u.onend = () => this.stop();
+    u.onerror = () => this.stop();
+    this.utter = u;
+    this.playing = true; this.paused = false;
+    speechSynthesis.speak(u);
+    this.showBar();
+  },
+  pause(){ if(this.playing){ speechSynthesis.pause(); this.paused = true; this.updateBar(); } },
+  resume(){ if(this.playing){ speechSynthesis.resume(); this.paused = false; this.updateBar(); } },
+  stop(){
+    speechSynthesis.cancel();
+    this.playing = false; this.paused = false; this.utter = null;
+    this.hideBar();
+  },
+  setRate(r){
+    this.rate = r;
+    if(this.playing){ const wasPaused = this.paused; this.stop(); if(!wasPaused) this.start(); }
+    this.updateBar();
+  },
+
+  showBar(){
+    let bar = document.getElementById('read-bar');
+    if(!bar){
+      bar = document.createElement('div');
+      bar.id = 'read-bar';
+      bar.style.cssText = 'position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:340;'
+        + 'background:var(--bg);border:2px solid var(--pr);border-radius:30px;padding:7px 10px;'
+        + 'display:flex;align-items:center;gap:8px;box-shadow:0 8px 26px rgba(0,0,0,.22);font-size:13px';
+      document.body.appendChild(bar);
+    }
+    bar.innerHTML =
+        '<button class="bi btn-xs" id="read-pp" onclick="Reader.toggle()" style="font-size:15px;min-width:34px">⏸</button>'
+      + '<button class="bi btn-xs" onclick="Reader.stop()" style="font-size:13px">⏹</button>'
+      + '<span style="font-size:11px;color:var(--tx2);margin:0 2px">Vitesse</span>'
+      + '<button class="bi btn-xs read-sp" data-r="0.7" onclick="Reader.setRate(0.7)">🐢</button>'
+      + '<button class="bi btn-xs read-sp" data-r="1"   onclick="Reader.setRate(1)">1×</button>'
+      + '<button class="bi btn-xs read-sp" data-r="1.3" onclick="Reader.setRate(1.3)">🐇</button>';
+    bar.style.display = 'flex';
+    this.updateBar();
+  },
+  updateBar(){
+    const pp = document.getElementById('read-pp');
+    if(pp) pp.textContent = this.paused ? '▶' : '⏸';
+    document.querySelectorAll('.read-sp').forEach(b => {
+      const on = parseFloat(b.dataset.r) === this.rate;
+      b.style.background = on ? 'var(--pr)' : '';
+      b.style.color = on ? '#fff' : '';
+    });
+  },
+  hideBar(){ const b = document.getElementById('read-bar'); if(b) b.style.display = 'none'; }
+};
+
+function readAloud(){ Reader.toggle(); }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// ÉDITEUR DE FORMULE À CASES  —  composant réutilisable
+// Un "champ" HTML contentEditable contient des <span class="fx-slot">
+// (cases vides à compléter). L'utilisateur tape dedans directement.
+// buildMl() reconstruit le balisage \frac{}{}, \sqrt{}, a^{}… pour le
+// moteur de rendu mathématique existant.
+// ═══════════════════════════════════════════════════════════════════
+const FX_STRUCT = [
+  {lbl:'a/b',  tip:'Fraction',        html:'<span class="fx-frac"><span class="fx-num fx-slot"></span><span class="fx-bar"></span><span class="fx-den fx-slot"></span></span>'},
+  {lbl:'√a',   tip:'Racine carrée',   html:'<span class="fx-sqrt"><span class="fx-radsign">√</span><span class="fx-rad fx-slot"></span></span>'},
+  {lbl:'ⁿ√a',  tip:'Racine n-ième',   html:'<span class="fx-sqrtn"><span class="fx-idx fx-slot"></span><span class="fx-radsign">√</span><span class="fx-rad fx-slot"></span></span>'},
+  {lbl:'aⁿ',   tip:'Puissance',       html:'<span class="fx-pow"><span class="fx-base fx-slot"></span><span class="fx-sup fx-slot"></span></span>'},
+  {lbl:'aₙ',   tip:'Indice',          html:'<span class="fx-sub2"><span class="fx-base fx-slot"></span><span class="fx-sub fx-slot"></span></span>'},
+  {lbl:'( )',  tip:'Parenthèses',     html:'(<span class="fx-slot"></span>)'},
+  {lbl:'x²',   tip:'x au carré',      html:'<span class="fx-pow"><span class="fx-base">x</span><span class="fx-sup">2</span></span>'}
+];
+
+// Insère un fragment HTML au niveau du curseur dans le champ formule
+function _fxInsertHtml(field, html){
+  field.focus();
+  const sel = window.getSelection();
+  let range;
+  if(sel.rangeCount && field.contains(sel.anchorNode)){
+    range = sel.getRangeAt(0);
+  } else {
+    range = document.createRange();
+    range.selectNodeContents(field);
+    range.collapse(false);
+  }
+  range.deleteContents();
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  const frag = document.createDocumentFragment();
+  let node, first=null, firstSlot=null;
+  while((node = tmp.firstChild)){
+    if(!first) first = node;
+    frag.appendChild(node);
+  }
+  range.insertNode(frag);
+  // place le curseur dans la première case vide du fragment inséré
+  firstSlot = first && (first.classList && first.classList.contains('fx-slot')
+              ? first : (first.querySelector ? first.querySelector('.fx-slot') : null));
+  if(firstSlot){ _fxFocusSlot(firstSlot); }
+  else {
+    // pas de case (ex : parenthèses avec slot direct) → après le fragment
+    const r2 = document.createRange();
+    r2.setStartAfter(first); r2.collapse(true);
+    sel.removeAllRanges(); sel.addRange(r2);
+  }
+  _fxRefresh(field);
+}
+function _fxFocusSlot(slot){
+  const sel = window.getSelection();
+  const r = document.createRange();
+  r.selectNodeContents(slot);
+  r.collapse(true);
+  sel.removeAllRanges(); sel.addRange(r);
+}
+
+// Reconstruit le balisage mathématique à partir du DOM du champ
+function _fxNodeToMl(node){
+  let out = '';
+  node.childNodes.forEach(function(n){
+    if(n.nodeType === 3){ out += n.textContent; return; }           // texte
+    if(n.nodeType !== 1) return;
+    const cl = n.classList;
+    if(cl.contains('fx-frac')){
+      const num = n.querySelector('.fx-num'), den = n.querySelector('.fx-den');
+      out += '\\frac{' + _fxNodeToMl(num) + '}{' + _fxNodeToMl(den) + '}';
+    } else if(cl.contains('fx-sqrtn')){
+      const idx = n.querySelector('.fx-idx'), rad = n.querySelector('.fx-rad');
+      out += '\\sqrt[' + _fxNodeToMl(idx) + ']{' + _fxNodeToMl(rad) + '}';
+    } else if(cl.contains('fx-sqrt')){
+      const rad = n.querySelector('.fx-rad');
+      out += '\\sqrt{' + _fxNodeToMl(rad) + '}';
+    } else if(cl.contains('fx-pow')){
+      const base = n.querySelector('.fx-base'), sup = n.querySelector('.fx-sup');
+      out += _fxNodeToMl(base) + '^{' + _fxNodeToMl(sup) + '}';
+    } else if(cl.contains('fx-sub2')){
+      const base = n.querySelector('.fx-base'), sub = n.querySelector('.fx-sub');
+      out += _fxNodeToMl(base) + '_{' + _fxNodeToMl(sub) + '}';
+    } else if(cl.contains('fx-slot')){
+      out += _fxNodeToMl(n);
+    } else {
+      out += _fxNodeToMl(n);
+    }
+  });
+  return out;
+}
+function fxBuildMl(field){ return _fxNodeToMl(field); }
+
+// Marque visuellement les cases vides et rafraîchit l'aperçu lié
+function _fxRefresh(field){
+  field.querySelectorAll('.fx-slot').forEach(function(s){
+    s.classList.toggle('fx-empty', (s.textContent || '').trim() === '');
+  });
+  if(field._onchange) field._onchange();
+}
+
+// Prépare un champ contentEditable comme éditeur de formule
+function fxInitField(field, onchange){
+  field._onchange = onchange;
+  field.setAttribute('contenteditable', 'true');
+  field.classList.add('fx-field');
+  field.addEventListener('input', function(){ _fxRefresh(field); });
+  field.addEventListener('keydown', function(e){
+    // Tab / Entrée : passer à la case suivante
+    if(e.key === 'Tab' || (e.key === 'Enter' && !e.shiftKey)){
+      const slots = Array.from(field.querySelectorAll('.fx-slot'));
+      if(slots.length){
+        e.preventDefault();
+        const sel = window.getSelection();
+        let cur = sel.anchorNode;
+        while(cur && cur !== field && !(cur.classList && cur.classList.contains('fx-slot'))) cur = cur.parentNode;
+        let idx = slots.indexOf(cur);
+        const next = slots[(idx + 1 + slots.length) % slots.length];
+        if(next) _fxFocusSlot(next);
+      }
+    }
+  });
+  _fxRefresh(field);
+}
+function fxClear(field){ field.innerHTML=''; _fxRefresh(field); }
+
+// Construit une palette (structures + symboles) qui insère dans `field`
+function fxBuildPalette(structHost, symHost, field){
+  if(structHost && !structHost._built){
+    structHost._built = true;
+    FX_STRUCT.forEach(function(s){
+      const b = document.createElement('button');
+      b.type='button'; b.className='ck'; b.textContent = s.lbl;
+      b.style.cssText = 'padding:6px 11px;font-size:13px';
+      b.setAttribute('data-tip', s.tip);
+      b.onmousedown = function(e){ e.preventDefault(); };
+      b.onclick = function(){ _fxInsertHtml(field, s.html); };
+      structHost.appendChild(b);
+    });
+  }
+  if(symHost && !symHost._built){
+    symHost._built = true;
+    MATH_SYMBOLS.forEach(function(s){
+      const b = document.createElement('button');
+      b.type='button'; b.className='sy'; b.textContent = s[0];
+      b.onmousedown = function(e){ e.preventDefault(); };
+      b.onclick = function(){
+        // Les symboles simples s'insèrent comme texte ; √ ouvre une racine
+        if(s[1] === '\\sqrt{}'){ _fxInsertHtml(field, FX_STRUCT[1].html); }
+        else { _fxInsertText(field, s[0]); }
+      };
+      symHost.appendChild(b);
+    });
+  }
+}
+function _fxInsertText(field, txt){
+  field.focus();
+  const sel = window.getSelection();
+  let range = (sel.rangeCount && field.contains(sel.anchorNode))
+    ? sel.getRangeAt(0)
+    : (function(){ const r=document.createRange(); r.selectNodeContents(field); r.collapse(false); return r; })();
+  range.deleteContents();
+  const tn = document.createTextNode(txt);
+  range.insertNode(tn);
+  const r2 = document.createRange(); r2.setStartAfter(tn); r2.collapse(true);
+  sel.removeAllRanges(); sel.addRange(r2);
+  _fxRefresh(field);
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// FORMULE DANS LE TEXTE — mini-éditeur inline
+// La formule validée est rendue en image nette (dataURL) et glissée
+// dans le flux du texte, alignée sur la ligne. Double-clic pour rééditer.
+// ═══════════════════════════════════════════════════════════════════
+let _fxTargetImg = null;   // <img> en cours d'édition, ou null pour un nouvel ajout
+
+function openFxPop(ev, existingImg){
+  const pop = document.getElementById('fx-pop');
+  if(!pop) return;
+  const field = document.getElementById('fx-edit');
+  fxBuildPalette(document.getElementById('fx-struct'), document.getElementById('fx-syms'), field);
+  if(!field._init){ fxInitField(field, null); field._init = true; }
+
+  _fxTargetImg = existingImg || null;
+  // rééditer une formule existante : recharger son balisage
+  if(existingImg && existingImg.dataset.ml){
+    field.innerHTML = _mlToFxHtml(existingImg.dataset.ml);
+    _fxRefresh(field);
+  } else {
+    fxClear(field);
+  }
+
+  // Sauver la position d'insertion dans le texte
+  _saveRteRange();
+
+  const btn = ev && ev.currentTarget ? ev.currentTarget : null;
+  const r = btn ? btn.getBoundingClientRect() : {left:innerWidth/2-170, bottom:120};
+  const left = Math.max(6, Math.min(r.left, window.innerWidth - 350));
+  const top  = Math.min(r.bottom + 6, window.innerHeight - 260);
+  pop.style.left = left + 'px'; pop.style.top = top + 'px'; pop.style.display = 'block';
+  setTimeout(function(){ field.focus(); }, 40);
+}
+function closeFxPop(){
+  const pop = document.getElementById('fx-pop');
+  if(pop) pop.style.display = 'none';
+  _fxTargetImg = null;
+}
+
+// Rend le balisage en petite image alignée sur la ligne de texte
+function _fxRenderImg(ml, sizePx){
+  const size = sizePx || (parseInt(S.textSize) || 20);
+  const m = mathMeasure(ml, size);
+  if(!m.w || !m.h) return null;
+  const pad = 3, dpr = 2;
+  const c = document.createElement('canvas');
+  c.width = Math.ceil((m.w + pad*2) * dpr);
+  c.height = Math.ceil((m.h + pad*2) * dpr);
+  const ctx = c.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const col = document.body.classList.contains('dark') ? '#E8E6FF' : '#1E1B4B';
+  _mlDraw(ctx, m.tree, pad, pad + m.a, col);
+  const img = document.createElement('img');
+  img.src = c.toDataURL('image/png');
+  img.className = 'fx-inline';
+  img.dataset.ml = ml;
+  img.dataset.size = size;
+  img.alt = '[formule]';
+  img.style.cssText = 'height:' + Math.round(m.h) + 'px;vertical-align:middle;margin:0 2px;cursor:pointer';
+  return img;
+}
+
+function fxInlineInsert(){
+  const field = document.getElementById('fx-edit');
+  const ml = fxBuildMl(field).trim();
+  if(!ml){ _toast('Compose d\'abord une formule','err'); return; }
+  const img = _fxRenderImg(ml);
+  if(!img){ _toast('Formule vide','err'); return; }
+
+  if(_fxTargetImg){
+    // remplacement d'une formule existante
+    _fxTargetImg.replaceWith(img);
+    _bindFxImg(img);
+    closeFxPop();
+    _fxCommitHostText(img);
+    return;
+  }
+
+  // insertion au point du curseur dans l'éditeur de texte actif
+  const eids = activeEditorIds();
+  const host = document.getElementById(eids.txo);
+  if(host && S.activeText){
+    host.focus();
+    _restoreRteRange();
+    const sel = window.getSelection();
+    let range = (sel.rangeCount && host.contains(sel.anchorNode))
+      ? sel.getRangeAt(0)
+      : (function(){ const r=document.createRange(); r.selectNodeContents(host); r.collapse(false); return r; })();
+    range.deleteContents();
+    range.insertNode(img);
+    // espace insécable après, pour pouvoir continuer à taper
+    const sp = document.createTextNode('\u00A0');
+    img.after(sp);
+    const r2 = document.createRange(); r2.setStartAfter(sp); r2.collapse(true);
+    sel.removeAllRanges(); sel.addRange(r2);
+    _bindFxImg(img);
+    closeFxPop();
+  } else {
+    // aucun texte en cours d'édition → on insère la formule comme objet indépendant
+    const size = parseInt(img.dataset.size) || 20;
+    const m = mathMeasure(ml, size);
+    const g = pageGeom();
+    _insertObj({tool:'math', x:g.marginX, y:120, w:Math.round(m.w), h:Math.round(m.h),
+      ml:ml, size:size, color:S.color||'#1E1B4B'});
+    closeFxPop();
+  }
+}
+
+// Rendre une formule inline recliquable (double-clic → réédition)
+function _bindFxImg(img){
+  img.ondblclick = function(e){
+    e.preventDefault(); e.stopPropagation();
+    openFxPop({currentTarget: img.parentNode ? findRteFxBtn() : null}, img);
+  };
+}
+function findRteFxBtn(){ return document.getElementById('rte-fx-btn'); }
+function _fxCommitHostText(){ /* le contenu reste dans l'éditeur, commit à la validation du texte */ }
+
+// Reconvertit un balisage \frac{}{} … en HTML de cases pour la réédition
+function _mlToFxHtml(ml){
+  const tree = _mlParse(ml);
+  function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function slot(inner){ return '<span class="fx-slot">' + inner + '</span>'; }
+  function walk(node){
+    let out='';
+    (node.c || []).forEach(function(k){ out += render(k); });
+    return out;
+  }
+  function render(n){
+    if(n.t === 'txt') return esc(n.v);
+    if(n.t === 'row') return walk(n);
+    if(n.t === 'frac') return '<span class="fx-frac"><span class="fx-num fx-slot">'
+        + walk(n.n) + '</span><span class="fx-bar"></span><span class="fx-den fx-slot">' + walk(n.d) + '</span></span>';
+    if(n.t === 'sqrt'){
+      if(n.idx) return '<span class="fx-sqrtn"><span class="fx-idx fx-slot">' + esc(n.idx)
+        + '</span><span class="fx-radsign">√</span><span class="fx-rad fx-slot">' + walk(n.a) + '</span></span>';
+      return '<span class="fx-sqrt"><span class="fx-radsign">√</span><span class="fx-rad fx-slot">' + walk(n.a) + '</span></span>';
+    }
+    if(n.t === 'sup') return '<span class="fx-pow"><span class="fx-base fx-slot">' + render(n.b)
+        + '</span><span class="fx-sup fx-slot">' + walk(n.e) + '</span></span>';
+    if(n.t === 'sub') return '<span class="fx-sub2"><span class="fx-base fx-slot">' + render(n.b)
+        + '</span><span class="fx-sub fx-slot">' + walk(n.e) + '</span></span>';
+    return '';
+  }
+  return walk(tree);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -4732,6 +5436,12 @@ function linkedHighlights(idx){
 }
 
 function cdDown(e){
+  if(REV.on){
+    const p = getXY(e);
+    revClick(p.x, p.y);
+    return;
+  }
+
   const{x,y}=getXY(e);S.drawing=true;S.lastX=x;S.lastY=y;
   // Commit any active text when clicking canvas
   if(S.activeText&&S.tool!=='text'){commitText();}
@@ -4803,6 +5513,7 @@ function cdDown(e){
 }
 
 function cdMove(e){
+  if(REV.on) return;
   if(!S.drawing)return;const{x,y}=getXY(e);
   // ── Resize/rotate ──────────────────────────────────────────────
   if(S.resizing&&S.selectedIdx>=0&&S.resizeOrig){
@@ -4878,6 +5589,7 @@ function cdMove(e){
 }
 
 function cdUp(e){
+  if(REV.on) return;
   if(!S.drawing)return;S.drawing=false;
   if(S.resizingText){S.resizingText=null;S.resizeOrig=null;redrawCanvas();scheduleAutoSave();return}
   if(S.resizing){S.resizing=false;S.resizeHandle=null;S.resizeOrig=null;scheduleAutoSave();return}
@@ -4909,6 +5621,7 @@ function cdUp(e){
 }
 
 function cdDbl(e){
+  if(REV.on) return;
   const{x,y}=getXY(e);
   if(S.tool==='text'||S.tool==='select'){
     const idx=findAt(x,y);
@@ -5107,6 +5820,10 @@ function redrawCanvas(){
   ctx.font='11px Nunito,sans-serif';ctx.fillStyle='#CBD5E1';ctx.textAlign='right';
   ctx.fillText('Page '+(S.curPage+1)+' / '+S.pages.length,c.width-10,c.height-8);
   ctx.textAlign='left';
+
+  // Les caches du mode révision passent par-dessus tout
+  revDrawMasks(ctx);
+
 }
 
 
@@ -6255,6 +6972,15 @@ function _wrapRuns(ctx, runs, maxW, baseSize){
     let line = [], lineW = 0;
     para.forEach(function(run){
       const sz = run.size || baseSize;
+      // Formule : bloc insécable de largeur mesurée
+      if(run.fx){
+        const m = mathMeasure(run.fx, run.fxSize || sz);
+        const fw = m.w;
+        if(lineW + fw > maxW && lineW > 0){ out.push(line); line = []; lineW = 0; }
+        line.push(Object.assign({}, run, {text:'', fxW:fw, fxH:m.h, fxA:m.a, size:sz}));
+        lineW += fw;
+        return;
+      }
       const font = (run.bold?'bold ':'') + (run.italic?'italic ':'') + sz + 'px ' + (S.a11yFont||'Nunito,sans-serif');
       const toks = run.text.match(/\S+\s*|\s+/g) || [];
       toks.forEach(function(tok){
@@ -6360,6 +7086,7 @@ function startEditTxt(idx){
   const w    = s.w || defaultTextW(g);
   _placeTextOverlay(div, s.x, s.y, w, size, lh, s.color || S.color, s.bold);
   div.innerHTML = s.html || _textToHtml(s.text || '', s);
+  div.querySelectorAll('img.fx-inline').forEach(_bindFxImg);
   S.activeText = true; S.editingIdx = idx;
   S._textX = s.x; S._textY = s.y; S._textW = w; S._textSizeUsed = size;
   s._hidden = true; redrawCanvas(); div.focus(); _syncRteSizeBtn();
@@ -6371,7 +7098,8 @@ function commitText(){
   const div = document.getElementById(eids.txo);
   if(!div) return;
   const html  = div.innerHTML || '';
-  const plain = (div.innerText || div.textContent || '').trim();
+  const hasFx = /class="fx-inline"|class='fx-inline'/.test(html) || div.querySelector('img.fx-inline');
+  const plain = ((div.innerText || div.textContent || '').trim()) || (hasFx ? ' ' : '');
   // Largeur réelle (l'élève a pu redimensionner la zone)
   let wCanvas = S._textW || defaultTextW();
   try{
@@ -6391,7 +7119,7 @@ function commitText(){
       if(plain){
         s.html = html; s.text = plain; s.w = wCanvas;
         const usedSize = S._textSizeUsed || currentTextSize();
-        const hasFmt = html.includes('<span') || html.includes('<b>') || html.includes('<i>') || html.includes('<u>');
+        const hasFmt = hasFx || html.includes('<span') || html.includes('<b>') || html.includes('<i>') || html.includes('<u>');
         if(!hasFmt){ s.color = S.color; s.size = usedSize; s.bold = S.bold; }
         else { s.size = usedSize; }
       } else gs().splice(S.editingIdx, 1);
@@ -6589,6 +7317,11 @@ function _parseHtmlRuns(html, defaultSize, defaultColor){
       return;
     }
     if(node.nodeName === 'BR'){ runs.push({...state, text:'\n'}); return; }
+    // Formule inline : conservée telle quelle comme "run formule"
+    if(node.nodeName === 'IMG' && node.classList && node.classList.contains('fx-inline')){
+      runs.push({...state, fx:node.dataset.ml||'', fxSize:parseFloat(node.dataset.size)||state.size, text:''});
+      return;
+    }
     // Inherit state
     const s = {...state};
     const el = node;
@@ -6639,6 +7372,16 @@ function _drawRichText(ctx, s){
     let x = s.x;
     line.forEach(function(run){
       const sz = run.size || baseSize;
+      if(run.fx){
+        // Dessine la formule, centrée verticalement sur la ligne de texte
+        const m = mathMeasure(run.fx, run.fxSize || sz);
+        ctx.save();
+        ctx.translate(x, y - sz*0.72 + (sz*0.96 - m.h)/2);
+        _mlDraw(ctx, m.tree, 0, m.a, run.color || baseColor);
+        ctx.restore();
+        x += (run.fxW || m.w);
+        return;
+      }
       ctx.font = (run.bold?'bold ':'') + (run.italic?'italic ':'') + sz + 'px ' + (S.a11yFont||'Nunito,sans-serif');
       ctx.fillStyle = run.color || baseColor;
       ctx.fillText(run.text, x, y);
@@ -6822,6 +7565,8 @@ init();
     <option value="18">18</option><option value="20">20</option><option value="24">24</option>
     <option value="28">28</option><option value="32">32</option><option value="40">40</option>
   </select>
+  <div class="sep"></div>
+  <button id="rte-fx-btn" onmousedown="event.preventDefault()" onclick="openFxPop(event)" data-tip="Insérer une formule mathématique">∑ƒ</button>
   <div class="sep"></div>
   <button id="rte-color-btn" onmousedown="event.preventDefault()" onclick="openColorPopover(event)" data-tip="Couleur du texte sélectionné"><span id="rte-color-dot" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1E1B4B;border:1.5px solid rgba(0,0,0,.25);vertical-align:-1px"></span></button>
   <div class="sep"></div>
