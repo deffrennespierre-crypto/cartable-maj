@@ -1,13 +1,13 @@
 {
-  "version": "7.2.5",
+  "version": "7.4.0",
   "date": "2026-08-16",
   "notes": [
-    "ajout correcteur orthographe multilangue"
+    "Correcteur orthographe multilangues"
   ],
   "files": {
     "public/index.html": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
-      "sha256": "0fcb49937666ae62bc5918369aa061ffa2c361ff79497551d5cc88d70a2ed54a"
+      "sha256": "65c2a4878a9bbb7e2091d3f5d4230408e82dc416fd1e2315627780881f7355d2"
     },
     "public/splash.png": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",
@@ -15,7 +15,7 @@
     },
     "public/docs/Guide-eleve.pdf": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/docs/Guide-eleve.pdf",
-      "sha256": "00a7b3d7c53c9c15ccc2abb12794f58460b70a3aa72ce892a4a8eeaa1c763376"
+      "sha256": "cd807b52c338e970a604c945cefe7bd57709bfecb2c101dba918ceb46b1f902c"
     },
     "public/docs/Note-parents.pdf": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/docs/Note-parents.pdf",
