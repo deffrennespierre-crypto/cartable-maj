@@ -662,6 +662,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn sci-tool" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
           <button class="tb-btn" onclick="openGramTool()" data-tip="Nature des mots — colorier verbes, noms, adjectifs…">🇫🇷 Grammaire</button>
           <button class="tb-btn" onclick="openSpell()" data-tip="Vérifier l\'orthographe de la page : accents, accords, mots inconnus">✏️ Corriger</button>
+          <button class="tb-btn live-btn active" onclick="toggleLiveSpell()" data-tip="Souligner les fautes directement sur la page (survole un mot souligné pour l\'explication)">👁 Fautes</button>
           <button class="tb-btn sci-tool" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
           <button class="tb-btn" onclick="saveCanvas(true)" data-tip="Sauvegarder maintenant (sauvegarde automatique toutes les 3s)" style="background:var(--pr);color:#fff;margin-left:auto">💾 Sauvegarder</button>
           <span class="save-ok" id="save-ok">✅ Sauvegardé</span>
@@ -751,6 +752,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn sci-tool" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
           <button class="tb-btn" onclick="openGramTool()" data-tip="Nature des mots — colorier verbes, noms, adjectifs…">🇫🇷 Grammaire</button>
           <button class="tb-btn" onclick="openSpell()" data-tip="Vérifier l\'orthographe de la page : accents, accords, mots inconnus">✏️ Corriger</button>
+          <button class="tb-btn live-btn active" onclick="toggleLiveSpell()" data-tip="Souligner les fautes directement sur la page (survole un mot souligné pour l\'explication)">👁 Fautes</button>
           <button class="tb-btn sci-tool" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
           <button class="tb-btn" onclick="saveCanvas(true)" data-tip="Sauvegarder maintenant (sauvegarde automatique toutes les 3s)" style="background:var(--pr);color:#fff;margin-left:auto">💾 Sauvegarder</button>
           <span class="ex-save-ok" id="ex-save-ok">✅ Sauvegardé</span>
@@ -840,6 +842,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="tb-btn sci-tool" onclick="openGraphTool()" data-tip="Traceur de courbes — insérer un graphique sur la page">📈 Courbe</button>
           <button class="tb-btn" onclick="openGramTool()" data-tip="Nature des mots — colorier verbes, noms, adjectifs…">🇫🇷 Grammaire</button>
           <button class="tb-btn" onclick="openSpell()" data-tip="Vérifier l\'orthographe de la page : accents, accords, mots inconnus">✏️ Corriger</button>
+          <button class="tb-btn live-btn active" onclick="toggleLiveSpell()" data-tip="Souligner les fautes directement sur la page (survole un mot souligné pour l\'explication)">👁 Fautes</button>
           <button class="tb-btn sci-tool" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calc</button>
           <button class="tb-btn" onclick="saveCanvas(true)" data-tip="Sauvegarder maintenant (sauvegarde automatique toutes les 3s)" style="background:var(--pr);color:#fff;margin-left:auto">💾 Sauvegarder</button>
           <span class="ex-save-ok" id="ev-save-ok">✅ Sauvegardé</span>
@@ -1057,7 +1060,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         </div>
         <div class="stsec">
           <h3>🔄 Mises à jour</h3>
-          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.4.0</b></div>
+          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.5.0</b></div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
             <div style="flex:1;min-width:190px">
               <div style="font-size:13px;font-weight:700">Version installée : <span id="current-version" style="color:var(--pr)">…</span></div>
@@ -1927,6 +1930,7 @@ async function exportCanvasPDF(){
   // Toujours exporter sur fond clair : un PDF sombre est illisible à l'impression
   const wasDark = document.body.classList.contains('dark');
   if(wasDark) document.body.classList.remove('dark');
+  const wasLive = LIVE.on; LIVE.on = false;   // pas de fautes soulignées dans le PDF
   const images = [];
   for(let i = 0; i < S.pages.length; i++){
     S.curPage = i;
@@ -1936,6 +1940,7 @@ async function exportCanvasPDF(){
   }
   S.curPage = origPage; S.selectedIdx = selIdx; S.selectedIdxs = selIdxs;
   if(wasDark) document.body.classList.add('dark');
+  LIVE.on = wasLive;
   redrawCanvas();
 
   const total = images.length;
@@ -3073,7 +3078,9 @@ async function init(){
   ]);
   const cls=S.settings.classe?(' · '+S.settings.classe):'';document.getElementById('sb-name').textContent=(S.settings.student_name||'Numérique')+cls;
   document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-  setupColorSwatches();initTooltips();_applySpellcheck();loadA11y();updateSciTools();_applySpellcheck();
+  setupColorSwatches();initTooltips();_applySpellcheck();loadA11y();updateSciTools();
+  if(S.settings && S.settings.live_spell === false) LIVE.on = false;
+  document.querySelectorAll('.live-btn').forEach(function(b){ b.classList.toggle('active', LIVE.on); });_applySpellcheck();
   if('speechSynthesis' in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();}; }renderSubjectFilter();
   renderDashboard();renderHomework();renderNotesSubjects();exRenderSubjList();evRenderSubjList();renderSettingsForm();
   updateHwBadge();
@@ -3123,7 +3130,8 @@ function switchView(v){
   if(S.canvas&&['notes','exercises','evaluations'].includes(v)){
     const cursors={draw:'crosshair',text:'text',erase:'cell',select:'default',multi:'crosshair',highlight:'cell',connector:'crosshair'};
     S.canvas.style.cursor=cursors[S.tool]||'crosshair';
-    if(S.tool==='select'){S.canvas.removeEventListener('mousemove',_hoverHandle);S.canvas.addEventListener('mousemove',_hoverHandle);}
+    // Toujours branché : le survol des fautes doit marcher avec tous les outils
+    S.canvas.removeEventListener('mousemove',_hoverHandle);S.canvas.addEventListener('mousemove',_hoverHandle);
   }
 }
 function toggleSidebar(){S.sidebarCol=!S.sidebarCol;document.getElementById('sidebar').classList.toggle('collapsed',S.sidebarCol);document.getElementById('sb-show-btn').style.display=S.sidebarCol?'block':'none'}
@@ -4790,6 +4798,7 @@ function revHoles(){
 }
 
 function revStart(){
+  LIVE._wasOn = LIVE.on; LIVE.on = false;   // pas de fautes soulignées en révision
   const holes = revHoles();
   if(!holes.length){
     _toast("Surligne d'abord les mots à réviser, puis relance le mode révision", 'err');
@@ -4805,6 +4814,7 @@ function revStart(){
   redrawCanvas();
 }
 function revStop(){
+  if(LIVE._wasOn !== undefined) LIVE.on = LIVE._wasOn;
   REV.on = false; REV.pending = -1;
   const bar = document.getElementById('rev-bar');
   if(bar){ bar.style.display = 'none'; document.body.style.paddingTop = ''; }
@@ -6236,6 +6246,187 @@ function _enSuggest(w){
   return out.slice(0,3);
 }
 
+
+// ═══════════════════════════════════════════════════════════════════
+// CORRECTION EN DIRECT — fautes soulignées sur la page
+// Le texte est dessiné sur un canvas : on mémorise la position de
+// chaque mot fautif au rendu, puis on détecte le survol par calcul.
+// ═══════════════════════════════════════════════════════════════════
+const LIVE = { on:true, boxes:[], cache:new Map(), hover:-1 };
+
+// Analyse d'un texte, mise en cache (l'analyse est coûteuse)
+function liveIssues(txt){
+  if(!txt) return [];
+  const lang = spellLang();
+  const key = lang + '\u0000' + txt;
+  if(LIVE.cache.has(key)) return LIVE.cache.get(key);
+  let res = [];
+  try{
+    res = /^en/.test(lang) ? spellCheckEn(txt)
+        : (lang === 'fr' ? spellCheckFr(txt) : []);
+  }catch(e){ res = []; }
+  if(LIVE.cache.size > 200) LIVE.cache.clear();
+  LIVE.cache.set(key, res);
+  return res;
+}
+
+const LIVE_COLORS = {
+  accent:'#3B82F6', accord:'#F59E0B', conjugaison:'#8B5CF6',
+  homophone:'#EC4899', inconnu:'#EF4444'
+};
+
+// Souligne les fautes d'un bloc de texte et mémorise leurs positions
+function _liveMarkText(ctx, s, idx, lines, lh, baseSize){
+  if(!LIVE.on) return;
+  if(typeof EXAM !== 'undefined' && EXAM.active) return;   // pas d'aide en examen
+  const plain = s.text || '';
+  const issues = liveIssues(plain);
+  if(!issues.length) return;
+
+  // Reconstruit le texte affiché ligne par ligne pour situer chaque mot
+  let consumed = 0;
+  let y = s.y;
+  lines.forEach(function(line){
+    let x = s.x;
+    line.forEach(function(run){
+      if(run.fx){ x += (run.fxW || 0); return; }
+      const sz = run.size || baseSize;
+      const txt = run.text || '';
+      ctx.font = (run.bold?'bold ':'') + (run.italic?'italic ':'') + sz + 'px ' + (S.a11yFont||'Nunito,sans-serif');
+      // Position de ce fragment dans le texte brut
+      const at = plain.indexOf(txt, consumed);
+      const start = (at >= 0) ? at : consumed;
+      const end = start + txt.length;
+      consumed = end;
+
+      issues.forEach(function(iss, n){
+        if(iss.end <= start || iss.start >= end) return;   // pas dans ce fragment
+        const a = Math.max(iss.start, start) - start;
+        const b = Math.min(iss.end, end) - start;
+        const wx = x + ctx.measureText(txt.slice(0, a)).width;
+        const ww = ctx.measureText(txt.slice(a, b)).width;
+        if(ww < 1) return;
+        const col = LIVE_COLORS[iss.type] || '#EF4444';
+        // Soulignement ondulé, comme dans un traitement de texte
+        ctx.save();
+        ctx.strokeStyle = col;
+        ctx.lineWidth = Math.max(1.2, sz/14);
+        ctx.beginPath();
+        const yy = y + sz*0.20;
+        const amp = Math.max(1.2, sz/13), step = Math.max(2.2, sz/7);
+        ctx.moveTo(wx, yy);
+        for(let px = wx, up = true; px < wx + ww; px += step, up = !up){
+          ctx.lineTo(Math.min(px + step, wx + ww), yy + (up ? amp : -amp));
+        }
+        ctx.stroke();
+        ctx.restore();
+        LIVE.boxes.push({x:wx, y:y - sz*0.78, w:ww, h:sz*1.05,
+                         strokeIdx:idx, iss:iss, color:col});
+      });
+      x += ctx.measureText(txt).width;
+    });
+    y += lh;
+  });
+}
+
+// Quelle faute se trouve sous le curseur ?
+function liveHitAt(x, y){
+  for(let i = LIVE.boxes.length - 1; i >= 0; i--){
+    const b = LIVE.boxes[i];
+    if(x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) return i;
+  }
+  return -1;
+}
+
+// ── Bulle d'explication au survol ──
+function liveShowPopup(n){
+  const b = LIVE.boxes[n];
+  if(!b) return;
+  let pop = document.getElementById('live-pop');
+  if(!pop){
+    pop = document.createElement('div');
+    pop.id = 'live-pop';
+    pop.style.cssText = 'position:fixed;z-index:370;background:var(--bg);border:2px solid var(--pr);'
+      + 'border-radius:10px;box-shadow:0 8px 26px rgba(0,0,0,.25);padding:10px 12px;max-width:330px;'
+      + 'font-size:12px;line-height:1.5;display:none';
+    pop.onmouseenter = function(){ LIVE.popHover = true; };
+    pop.onmouseleave = function(){ LIVE.popHover = false; liveHidePopup(); };
+    document.body.appendChild(pop);
+  }
+  const i = b.iss;
+  const T = (typeof SPELL_TYPES !== 'undefined' && SPELL_TYPES[i.type]) || {label:'Faute', ico:'?'};
+  const esc = t => String(t == null ? '' : t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const sugg = (i.suggest || []).filter(Boolean).map(function(sg){
+    return '<button class="bi btn-xs" style="font-size:12px;font-weight:800;background:' + b.color
+      + ';color:#fff;border-color:' + b.color + ';margin:3px 3px 0 0" '
+      + 'onclick="liveFix(' + n + ',\'' + String(sg).replace(/'/g,"\\'") + '\')">✓ ' + esc(sg) + '</button>';
+  }).join('');
+
+  pop.innerHTML =
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">'
+    +   '<span style="background:' + b.color + ';color:#fff;font-size:10px;font-weight:800;'
+    +     'border-radius:5px;padding:2px 7px">' + T.ico + ' ' + T.label + '</span>'
+    +   '<b style="font-size:12.5px">' + esc(i.word) + '</b>'
+    + '</div>'
+    + '<div style="font-weight:700;margin-bottom:4px">' + esc(i.msg) + '</div>'
+    + (i.regle ? '<div style="color:var(--tx2);font-size:11.5px;margin-bottom:4px">📖 ' + i.regle + '</div>' : '')
+    + (i.exemple ? '<div style="color:var(--tx3);font-size:11px;margin-bottom:4px">' + i.exemple + '</div>' : '')
+    + (sugg || '<span style="font-size:11px;color:var(--tx3)">Corrige toi-même sur la page.</span>');
+
+  // Position à l'écran, recadrée dans la fenêtre
+  try{
+    const cr = S.canvas.getBoundingClientRect();
+    const scX = cr.width / S.canvas.width, scY = cr.height / S.canvas.height;
+    pop.style.display = 'block';
+    const pw = pop.offsetWidth, ph = pop.offsetHeight, M = 6;
+    let left = cr.left + (b.x + b.w/2) * scX - pw/2;
+    left = Math.max(M, Math.min(left, window.innerWidth - pw - M));
+    let top = cr.top + (b.y + b.h) * scY + 8;
+    if(top + ph > window.innerHeight - M) top = cr.top + b.y * scY - ph - 8;
+    pop.style.left = left + 'px';
+    pop.style.top = Math.max(M, top) + 'px';
+  }catch(e){ pop.style.display = 'none'; }
+}
+function liveHidePopup(){
+  setTimeout(function(){
+    if(LIVE.popHover) return;
+    const p = document.getElementById('live-pop');
+    if(p) p.style.display = 'none';
+    LIVE.hover = -1;
+  }, 120);
+}
+
+// Applique une correction directement sur la page
+function liveFix(n, repl){
+  const b = LIVE.boxes[n];
+  if(!b) return;
+  const s = gs()[b.strokeIdx];
+  if(!s || !s.text) return;
+  const i = b.iss;
+  _snapshotUndo();
+  let r = repl;
+  if(/^[A-ZÀ-Þ]/.test(i.word)) r = repl.charAt(0).toUpperCase() + repl.slice(1);
+  s.text = s.text.slice(0, i.start) + r + s.text.slice(i.end);
+  if(s.html) s.html = null;
+  LIVE.popHover = false;
+  const p = document.getElementById('live-pop'); if(p) p.style.display = 'none';
+  LIVE.hover = -1;
+  redrawCanvas(); scheduleAutoSave();
+  _toast('✅ Corrigé : ' + r, 'ok');
+}
+
+// Activer / désactiver la correction en direct
+function toggleLiveSpell(){
+  LIVE.on = !LIVE.on;
+  if(S.settings){ S.settings.live_spell = LIVE.on; api.put('/api/settings', S.settings).catch(function(){}); }
+  const p = document.getElementById('live-pop'); if(p) p.style.display = 'none';
+  document.querySelectorAll('.live-btn').forEach(function(b){
+    b.classList.toggle('active', LIVE.on);
+  });
+  redrawCanvas();
+  _toast(LIVE.on ? '✏️ Correction en direct activée' : '✏️ Correction en direct désactivée', 'ok');
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // INFOBULLES — une seule boîte, recadrée dans la fenêtre
 // ═══════════════════════════════════════════════════════════════════
@@ -6507,6 +6698,17 @@ function _setupHoverCursor(){
   S.canvas.addEventListener('mousemove',_hoverHandle);
 }
 function _hoverHandle(e){
+  // Survol d'une faute : explication + correction, quel que soit l'outil
+  if(!S.drawing && LIVE.on && LIVE.boxes.length){
+    const p = getXY(e);
+    const n = liveHitAt(p.x, p.y);
+    if(n >= 0){
+      if(n !== LIVE.hover){ LIVE.hover = n; liveShowPopup(n); }
+      if(S.canvas) S.canvas.style.cursor = 'help';
+      return;
+    }
+    if(LIVE.hover >= 0){ liveHidePopup(); }
+  }
   if(S.tool!=='select'||S.drawing)return;
   const{x,y}=getXY(e);
   if(S.selectedIdx>=0){
@@ -6692,6 +6894,7 @@ function linkedHighlights(idx){
 }
 
 function cdDown(e){
+  { const p=document.getElementById('live-pop'); if(p) p.style.display='none'; LIVE.hover=-1; }
   if(REV.on){
     const p = getXY(e);
     revClick(p.x, p.y);
@@ -7021,6 +7224,7 @@ function redrawCanvas(){
 
   // ── SINGLE PASS in array order — position = z-order ────────────
   // Images at index 0 = background; text pushed last = foreground
+  LIVE.boxes = [];   // repositionnées à chaque rendu
   const st=gs();
   // Ordre de rendu : les surlignages passent DERRIÈRE (le texte reste lisible)
   const _rank = function(s){ return s.tool==='image' ? 0 : (s.tool==='highlight' ? 1 : 2); };
@@ -7069,7 +7273,7 @@ function redrawCanvas(){
       else{ctx.moveTo(s.points[0].x,s.points[0].y);s.points.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.stroke();}
       if(isHighlight)ctx.restore();
     } else if(s.tool==='text'){
-      _drawRichText(ctx, s);
+      _drawRichText(ctx, s, i);
     } else if(s.tool==='graph'){
       drawGraph(ctx, s);
     } else if(s.tool==='math'){
@@ -7200,6 +7404,7 @@ async function saveCanvas(showOk=true){
       const el=document.getElementById(okId);
       if(el){el.style.display='inline';setTimeout(()=>{el.style.display='none';},2000);}
     }
+    LIVE.cache.clear();
     // Le contenu a changé : vider le cache de la recherche
     [S.sessions,S.exSessions,S.evSessions].forEach(function(l){
       (l||[]).forEach(function(s){ delete s._srText; });
@@ -8713,7 +8918,7 @@ function _parseHtmlRuns(html, defaultSize, defaultColor){
 }
 
 // Draw rich HTML text on canvas (used in redrawCanvas single-pass)
-function _drawRichText(ctx, s){
+function _drawRichText(ctx, s, idx){
   const g         = pageGeom();
   const baseSize  = s.size || autoTextSize(g);
   const baseColor = inkColor(s.color || LIGHT_INK);
@@ -8754,6 +8959,9 @@ function _drawRichText(ctx, s){
     });
     y += lh;
   });
+  // Souligne les fautes détectées (correction en direct)
+  if(idx !== undefined && !s.html) _liveMarkText(ctx, s, idx, lines, lh, baseSize);
+
   // Mémorise la boîte pour la sélection et le hit-test
   s._w = maxW;
   s._h = Math.max(lh, lines.length * lh);
