@@ -679,7 +679,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div class="empty"><div class="empty-ico">✏️</div><h3>Sélectionne une séance</h3><p style="font-size:11px">Navigue dans l'arborescence à gauche.</p></div>
         </div>
         <div class="page-bar" id="page-bar" style="display:none"></div>
-        <div id="text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
+        <div id="text-overlay" class="rte-overlay" contenteditable="true" spellcheck="true" lang="fr" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
       </div>
     </div>
 
@@ -767,7 +767,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div class="empty"><div class="empty-ico">✏️</div><h3>Sélectionne un exercice</h3><p style="font-size:11px">Navigue dans l'arborescence pour ouvrir tes exercices.</p></div>
         </div>
         <div class="page-bar" id="ex-page-bar" style="display:none"></div>
-        <div id="ex-text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
+        <div id="ex-text-overlay" class="rte-overlay" contenteditable="true" spellcheck="true" lang="fr" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
       </div>
     </div>
 
@@ -855,7 +855,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div class="empty"><div class="empty-ico">✏️</div><h3>Sélectionne une évaluation</h3><p style="font-size:11px">Navigue dans l'arborescence pour ouvrir tes exercices.</p></div>
         </div>
         <div class="page-bar" id="ev-page-bar" style="display:none"></div>
-        <div id="ev-text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
+        <div id="ev-text-overlay" class="rte-overlay" contenteditable="true" spellcheck="true" lang="fr" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
       </div>
     </div>
 
@@ -1054,7 +1054,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         </div>
         <div class="stsec">
           <h3>🔄 Mises à jour</h3>
-          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.2.4</b></div>
+          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.2.5</b></div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
             <div style="flex:1;min-width:190px">
               <div style="font-size:13px;font-weight:700">Version installée : <span id="current-version" style="color:var(--pr)">…</span></div>
@@ -3054,7 +3054,7 @@ async function init(){
   ]);
   const cls=S.settings.classe?(' · '+S.settings.classe):'';document.getElementById('sb-name').textContent=(S.settings.student_name||'Numérique')+cls;
   document.querySelectorAll('.nav-btn[data-view]').forEach(b=>b.addEventListener('click',()=>switchView(b.dataset.view)));
-  setupColorSwatches();initTooltips();_applySpellcheck();loadA11y();updateSciTools();
+  setupColorSwatches();initTooltips();_applySpellcheck();loadA11y();updateSciTools();_applySpellcheck();
   if('speechSynthesis' in window){ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=function(){speechSynthesis.getVoices();}; }renderSubjectFilter();
   renderDashboard();renderHomework();renderNotesSubjects();exRenderSubjList();evRenderSubjList();renderSettingsForm();
   updateHwBadge();
@@ -3093,7 +3093,7 @@ function switchView(v){
     if(c){S.canvas=c;S.ctx=c.getContext('2d');}
     evRenderSubjList();
   }
-  updateSciTools();
+  updateSciTools();_applySpellcheck();
   if(v==='dashboard')renderDashboard();
   if(v==='agenda')renderAgenda();
   if(v==='homework')renderHomework();
@@ -3481,7 +3481,7 @@ function renderNotesSubjects(){
     </div>`).join('');
 }
 async function selectSubject(id){
-  S.selSubjectId=id;S.selSessionId=null;renderNotesSubjects();updateSciTools();
+  S.selSubjectId=id;S.selSessionId=null;renderNotesSubjects();updateSciTools();_applySpellcheck();
   const sub=S.subjects.find(s=>s.id===id);
   S.lessons=await api.get('/api/lessons?subject_id='+id);
   S.chapters=[];S.sessions=[];
@@ -3572,10 +3572,17 @@ function deleteCurPage(){
 
 // Correcteur d'orthographe — actif sauf en mode examen
 function _applySpellcheck(){
-  const on = !(typeof EXAM!=='undefined' && EXAM.active);
+  const examOn = (typeof EXAM!=='undefined' && EXAM.active);
+  const lang = spellLang();
   ['text-overlay','ex-text-overlay','ev-text-overlay'].forEach(function(id){
     const d=document.getElementById(id);
-    if(d){ d.lang='fr'; d.spellcheck=on; d.setAttribute('spellcheck', on?'true':'false'); }
+    if(!d) return;
+    // En évaluation, le correcteur est coupé (mode examen)
+    const on = !(examOn && id === 'ev-text-overlay') && !examOn;
+    d.lang = lang;
+    d.spellcheck = on;
+    d.setAttribute('spellcheck', on ? 'true' : 'false');
+    d.setAttribute('lang', lang);
   });
 }
 
@@ -4659,7 +4666,7 @@ function toggleSciSubject(id){
   S.settings.sci_subjects = list;
   api.put('/api/settings', S.settings).catch(function(){});
   renderSettingsForm();
-  updateSciTools();
+  updateSciTools();_applySpellcheck();
   _toast(cur ? '🔬 ' + sub.name + ' : outils scientifiques désactivés'
              : '🔬 ' + sub.name + ' : outils scientifiques activés', 'ok');
 }
@@ -5491,6 +5498,63 @@ function syncBgSelector(){
     const sel = document.getElementById(id);
     if(sel) sel.value = v;
   });
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// CORRECTEUR D'ORTHOGRAPHE — langue selon la matière
+// Le navigateur souligne les fautes ; la langue détermine le dictionnaire.
+// Anglais, allemand, espagnol et italien sont reconnus depuis le nom
+// de la matière, ou choisis manuellement dans les Paramètres.
+// ═══════════════════════════════════════════════════════════════════
+const SPELL_LANGS = {
+  fr:{code:'fr',    label:'Français'},
+  en:{code:'en-GB', label:'Anglais'},
+  de:{code:'de',    label:'Allemand'},
+  es:{code:'es',    label:'Espagnol'},
+  it:{code:'it',    label:'Italien'}
+};
+const SPELL_RULES = [
+  [/anglais|english/i,            'en'],
+  [/allemand|deutsch|german/i,    'de'],
+  [/espagnol|espa|spanish/i,      'es'],
+  [/italien|italian/i,            'it'],
+  [/latin|grec/i,                 'fr']   // pas de dictionnaire : on reste en français
+];
+
+
+// Langue retenue pour une matière (détection ou choix manuel)
+function _subjLang(sub){
+  const forced = S.settings && S.settings.spell_langs;
+  if(forced && forced[sub.id]) return forced[sub.id];
+  const name = sub.name || '';
+  for(const r of SPELL_RULES){ if(r[0].test(name)) return r[1]; }
+  return 'fr';
+}
+function setSubjectLang(id, lang){
+  if(!S.settings.spell_langs) S.settings.spell_langs = {};
+  S.settings.spell_langs[id] = lang;
+  api.put('/api/settings', S.settings).catch(function(){});
+  _applySpellcheck();
+  const sub = (S.subjects||[]).find(s => s.id === id);
+  _toast('✏️ ' + (sub ? sub.name : 'Matière') + ' : correcteur en ' + SPELL_LANGS[lang].label, 'ok');
+}
+
+// Langue à utiliser pour la matière ouverte
+function spellLang(){
+  const forced = S.settings && S.settings.spell_langs;   // {subjectId: 'en'}
+  const sub = (typeof currentSubject === 'function') ? currentSubject() : null;
+  if(sub){
+    if(forced && forced[sub.id]) return SPELL_LANGS[forced[sub.id]] ? SPELL_LANGS[forced[sub.id]].code : 'fr';
+    const name = sub.name || '';
+    for(const r of SPELL_RULES){ if(r[0].test(name)) return SPELL_LANGS[r[1]].code; }
+  }
+  return 'fr';
+}
+function spellLangLabel(){
+  const c = spellLang();
+  for(const k in SPELL_LANGS){ if(SPELL_LANGS[k].code === c) return SPELL_LANGS[k].label; }
+  return 'Français';
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -6622,7 +6686,7 @@ function renderSettingsForm(){
   updateAiUI();
   // Subjects grid
   const stSubj = document.getElementById('st-subjects')||document.getElementById('st-subj');
-  if(stSubj) stSubj.innerHTML = S.subjects.map(s=>`<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;border:1px solid var(--bd)"><div style="width:24px;height:24px;border-radius:6px;background:${s.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">${s.icon}</div><div style="flex:1;font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div><button onclick="toggleSciSubject(${s.id})" style="background:none;border:none;cursor:pointer;font-size:12px;padding:1px 4px;opacity:${isSciSubject(s)?1:.28}" title="${isSciSubject(s)?'Matière scientifique — calculatrice, courbes et équations disponibles. Cliquer pour désactiver.':'Activer les outils scientifiques (calculatrice, courbes, équations) pour cette matière'}">🔬</button><button onclick="deleteSubject(${s.id})" style="background:none;border:none;cursor:pointer;color:var(--er);font-size:11px;padding:1px 4px;opacity:.6" title="Supprimer">🗑</button></div>`).join('');
+  if(stSubj) stSubj.innerHTML = S.subjects.map(s=>`<div style="display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:8px;border:1px solid var(--bd)"><div style="width:24px;height:24px;border-radius:6px;background:${s.color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px">${s.icon}</div><div style="flex:1;font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div><select onchange="setSubjectLang(${s.id},this.value)" onclick="event.stopPropagation()" title="Langue du correcteur d'orthographe pour cette matière" style="font-size:10px;padding:1px 3px;border-radius:4px;border:1px solid var(--bd);background:var(--bg);color:var(--tx2);max-width:74px">${['fr','en','de','es','it'].map(k=>`<option value="${k}" ${_subjLang(s)===k?'selected':''}>${SPELL_LANGS[k].label}</option>`).join('')}</select><button onclick="toggleSciSubject(${s.id})" style="background:none;border:none;cursor:pointer;font-size:12px;padding:1px 4px;opacity:${isSciSubject(s)?1:.28}" title="${isSciSubject(s)?'Matière scientifique — calculatrice, courbes et équations disponibles. Cliquer pour désactiver.':'Activer les outils scientifiques (calculatrice, courbes, équations) pour cette matière'}">🔬</button><button onclick="deleteSubject(${s.id})" style="background:none;border:none;cursor:pointer;color:var(--er);font-size:11px;padding:1px 4px;opacity:.6" title="Supprimer">🗑</button></div>`).join('');
   const ex = new Set(S.subjects.map(s=>s.name));
   const avail = PRESET_SUBJ.filter(p=>!ex.has(p.name));
   const stPresets = document.getElementById('st-presets');
@@ -6809,7 +6873,7 @@ function exRenderSubjList(){
 }
 
 async function exSelSubj(id){
-  S.exSelSubjId=id;updateSciTools();S.exSelSessId=null;exRenderSubjList();
+  S.exSelSubjId=id;updateSciTools();_applySpellcheck();S.exSelSessId=null;exRenderSubjList();
   const sub=S.subjects.find(s=>s.id===id);
   S.exLessons=await api.get('/api/ex-lessons?subject_id='+id);
   S.exChapters=[];S.exSessions=[];
@@ -6918,7 +6982,7 @@ function exBuildCanvas(){
   wrap.appendChild(canvas);S.canvas=canvas;S.ctx=canvas.getContext('2d');
   if(!txo){
     txo=document.createElement('div');txo.id=ids.txo;txo.className='rte-overlay';
-    txo.contentEditable='true';txo.spellcheck=false;
+    txo.contentEditable='true';txo.spellcheck=true;txo.lang=spellLang();
     txo.setAttribute('onblur',"setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)");
     txo.setAttribute('onkeydown','textKeyDown(event)');
     txo.setAttribute('onmouseup','rteCheckSel()');
@@ -6965,7 +7029,7 @@ function evToggleFS(){const v=document.getElementById('v-evaluations');const on=
 function evDelCurPage(){deleteCurPage();}
 function evRenderSubjList(){const el=document.getElementById('ev-subj-list');if(!el)return;el.innerHTML=S.subjects.map(s=>`<div class="subj-item ${S.evSelSubjId===s.id?'active':''}" onclick="evSelSubj(${s.id})" title="${s.name}"><div class="subj-ico" style="background:${s.color}">${s.icon}</div><div style="min-width:0"><div style="font-size:11px;font-weight:800;color:${S.evSelSubjId===s.id?s.color:'var(--tx)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div></div></div>`).join('');}
 async function evSelSubj(id){
-  S.evSelSubjId=id;updateSciTools();S.evSelSessId=null;evRenderSubjList();
+  S.evSelSubjId=id;updateSciTools();_applySpellcheck();S.evSelSessId=null;evRenderSubjList();
   const sub=S.subjects.find(s=>s.id===id);
   S.evLessons=await api.get('/api/ev-lessons?subject_id='+id);
   S.evChapters=[];S.evSessions=[];
@@ -7020,7 +7084,7 @@ function evBuildCanvas(){
   wrap.innerHTML='';
   const canvas=document.createElement('canvas');canvas.id='evNoteCanvas';canvas.width=1200;canvas.height=900;
   wrap.appendChild(canvas);S.canvas=canvas;S.ctx=canvas.getContext('2d');
-  if(!txo){txo=document.createElement('div');txo.id=ids.txo;txo.className='rte-overlay';txo.contentEditable='true';txo.spellcheck=false;txo.setAttribute('onblur',"setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)");txo.setAttribute('onkeydown','textKeyDown(event)');txo.setAttribute('onmouseup','rteCheckSel()');txo.setAttribute('onkeyup','rteCheckSel()');}
+  if(!txo){txo=document.createElement('div');txo.id=ids.txo;txo.className='rte-overlay';txo.contentEditable='true';txo.spellcheck=true;txo.lang=spellLang();txo.setAttribute('onblur',"setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)");txo.setAttribute('onkeydown','textKeyDown(event)');txo.setAttribute('onmouseup','rteCheckSel()');txo.setAttribute('onkeyup','rteCheckSel()');}
   txo.style.display='none';txo.style.pointerEvents='none';wrap.appendChild(txo);redrawCanvas();setupCanvasEvents();
 }
 function evRenderPageBar(){const ids=evIds();const bar=document.getElementById(ids.pagebar);if(!bar)return;bar.style.display='flex';bar.innerHTML=S.pages.map((_,i)=>`<button class="ptab ${i===S.curPage?'active':''}" onclick="evGoPage(${i})">Page ${i+1}</button>`).join('')+`<button class="ptab" onclick="evAddPage()">+ Page</button>`;}
@@ -7632,7 +7696,8 @@ function _placeTextOverlay(div, x, y, w, size, lh, color, bold){
     +'border-radius:2px;outline:none;overflow:hidden;resize:horizontal;'
     +'z-index:10;cursor:text;pointer-events:all';
   const examOn = (typeof EXAM!=='undefined' && EXAM.active);
-  div.lang = 'fr';
+  div.lang = spellLang();
+  div.setAttribute('lang', div.lang);
   div.spellcheck = !examOn;
   div.setAttribute('spellcheck', examOn ? 'false' : 'true');
   div.setAttribute('autocorrect', examOn ? 'off' : 'on');

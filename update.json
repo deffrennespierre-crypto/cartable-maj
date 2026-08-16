@@ -1,14 +1,13 @@
 {
-  "version": "7.2.4",
+  "version": "7.2.5",
   "date": "2026-08-16",
   "notes": [
-    "Correctif modéle",
-    "Correctif saisi texte en mode sombre"
+    "ajout correcteur orthographe multilangue"
   ],
   "files": {
     "public/index.html": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
-      "sha256": "ec3e76a303e54891237bc7c667b629e99518088cc6ce3f5c552ebec4c04d17ac"
+      "sha256": "0fcb49937666ae62bc5918369aa061ffa2c361ff79497551d5cc88d70a2ed54a"
     },
     "public/splash.png": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",
@@ -16,7 +15,7 @@
     },
     "public/docs/Guide-eleve.pdf": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/docs/Guide-eleve.pdf",
-      "sha256": "94c4310f072a3b43f6a370901800875fad76322a983b4566386cd418fd3c3297"
+      "sha256": "00a7b3d7c53c9c15ccc2abb12794f58460b70a3aa72ce892a4a8eeaa1c763376"
     },
     "public/docs/Note-parents.pdf": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/docs/Note-parents.pdf",
