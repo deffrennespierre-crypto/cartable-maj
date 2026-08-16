@@ -3776,7 +3776,7 @@ const GRAM_CATS = {
   pronom:      {label:'Pronom',       color:'#EC4899', key:'O'},
   preposition: {label:'Préposition',  color:'#14B8A6', key:'P'},
   conjonction: {label:'Conjonction',  color:'#84CC16', key:'C'},
-  sujet:       {label:'Sujet',        color:'#EAB308', key:'S'},
+  sujet:       {label:'Sujet',        color:'#334155', key:'S'},
   inconnu:     {label:'Indéterminé',  color:'#CBD5E1', key:'?'}
 };
 const GRAM_BY_KEY = {V:'verbe',N:'nom',A:'adjectif',R:'adverbe',D:'determinant',
@@ -4187,9 +4187,23 @@ function openGramTool(){
       lg.appendChild(s);
     });
   }
-  // pré-remplir avec la sélection en cours
-  const sel=(window.getSelection?window.getSelection().toString():'').trim();
+  // Pré-remplir : sélection du navigateur, blocs de texte sélectionnés sur la
+  // page, ou à défaut tout le texte de la page courante.
   const ta=document.getElementById('gram-input');
+  let sel=(window.getSelection?window.getSelection().toString():'').trim();
+  if(!sel && typeof _onCanvasView==='function' && _onCanvasView()){
+    const idxs=(S.selectedIdxs && S.selectedIdxs.length) ? S.selectedIdxs
+             : (S.selectedIdx>=0 ? [S.selectedIdx] : []);
+    const parts=[];
+    idxs.forEach(function(i){ const s=gs()[i]; if(s&&s.tool==='text'&&s.text) parts.push(s.text.trim()); });
+    sel=parts.join('\n').trim();
+    if(!sel){
+      // rien de sélectionné : proposer tout le texte de la page, de haut en bas
+      sel=gs().filter(s=>s.tool==='text'&&s.text)
+              .sort((a,b)=>(a.y||0)-(b.y||0))
+              .map(s=>s.text.trim()).join('\n').trim();
+    }
+  }
   if(ta && sel) ta.value=sel;
   _openTool('gram-modal'); gramRun();
   if(ta) setTimeout(()=>ta.focus(),60);
@@ -4988,6 +5002,70 @@ function _mlToFxHtml(ml){
   return walk(tree);
 }
 
+
+// ═══════════════════════════════════════════════════════════════════
+// GOMME — supprime réellement les éléments touchés
+// (l'ancienne version peignait un trait couleur papier : elle masquait
+//  les lignes de la page et empêchait de surligner par-dessus)
+// ═══════════════════════════════════════════════════════════════════
+function _distToSeg(px, py, ax, ay, bx, by){
+  const dx = bx-ax, dy = by-ay;
+  const len2 = dx*dx + dy*dy;
+  let t = len2 ? ((px-ax)*dx + (py-ay)*dy) / len2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  const cx = ax + t*dx, cy = ay + t*dy;
+  return Math.hypot(px-cx, py-cy);
+}
+
+function eraseAt(x, y){
+  const R = S.eraseR || 14;
+  const st = gs();
+  let changed = false;
+
+  for(let i = st.length - 1; i >= 0; i--){
+    const s = st[i];
+    let hit = false;
+
+    if(s.points && s.points.length){
+      const half = (s.size || 4) / 2;
+      if(s.points.length === 1){
+        hit = Math.hypot(x - s.points[0].x, y - s.points[0].y) <= R + half;
+      } else {
+        for(let k = 1; k < s.points.length; k++){
+          if(_distToSeg(x, y, s.points[k-1].x, s.points[k-1].y, s.points[k].x, s.points[k].y) <= R + half){
+            hit = true; break;
+          }
+        }
+      }
+    } else {
+      // texte, image, forme, graphique, équation : boîte englobante
+      const b = strokeBBox(s);
+      if(b) hit = (x >= b.x - R && x <= b.x + b.w + R && y >= b.y - R && y <= b.y + b.h + R);
+    }
+
+    if(hit){ st.splice(i, 1); changed = true; }
+  }
+
+  if(changed){
+    S.selectedIdx = -1; S.selectedIdxs = [];
+    redrawCanvas();
+    scheduleAutoSave();
+  }
+  _drawEraserCursor(x, y);
+}
+
+// Cercle de la gomme, pour voir ce qu'on va effacer
+function _drawEraserCursor(x, y){
+  if(!S.ctx) return;
+  const ctx = S.ctx, R = S.eraseR || 14;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(239,68,68,.75)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.arc(x, y, R, 0, Math.PI*2); ctx.stroke();
+  ctx.restore();
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // INFOBULLES — une seule boîte, recadrée dans la fenêtre
 // ═══════════════════════════════════════════════════════════════════
@@ -5506,11 +5584,16 @@ function cdDown(e){
   if(S.tool==='multi'){S.multiSel=true;S.multiRect={x,y,w:0,h:0};S.selectedIdxs=[];return}
   if(S.tool==='draw'||S.tool==='erase'||S.tool==='highlight'){
     commitText();
-    const strokeColor = S.tool==='erase'
-      ? (document.body.classList.contains('dark')?'#1C1A2E':'#FFFEF6')
-      : (S.tool==='highlight' ? (S.hlColor||'#FDE047') : S.color);
-    const strokeSize = S.tool==='erase' ? S.brushSize*4
-      : (S.tool==='highlight' ? (S.hlSize||20) : S.brushSize);
+    if(S.tool==='erase'){
+      // Vraie gomme : on SUPPRIME les tracés touchés au lieu de peindre
+      // un trait couleur papier (qui masquait les lignes et les surlignages).
+      _snapshotUndo();
+      S.eraseR = Math.max(8, (S.brushSize||4) * 3);
+      eraseAt(x, y);
+      return;
+    }
+    const strokeColor = (S.tool==='highlight' ? (S.hlColor||'#FDE047') : S.color);
+    const strokeSize  = (S.tool==='highlight' ? (S.hlSize||20) : S.brushSize);
     S.currentStroke={tool:S.tool,color:strokeColor,size:strokeSize,points:[{x,y}]};
   }
 
@@ -5572,7 +5655,8 @@ function cdMove(e){
     if(s.tool==='image')repositionImgTB(s);
     redrawCanvas();S.lastX=x;S.lastY=y;return;
   }
-  if((S.tool==='draw'||S.tool==='erase'||S.tool==='highlight')&&S.currentStroke){
+  if(S.tool==='erase'){ eraseAt(x, y); S.lastX=x; S.lastY=y; return; }
+  if((S.tool==='draw'||S.tool==='highlight')&&S.currentStroke){
     S.currentStroke.points.push({x,y});
     const ctx=S.ctx,s=S.currentStroke,pts=s.points,l=pts.length;
     if(s.tool==='highlight'){
@@ -5621,6 +5705,7 @@ function cdUp(e){
   }
   if(S.tool==='text'&&!S.activeText&&!S._justCommitted){const{x,y}=getXY(e);showTextOverlay(x,y);return}
   if(S.dragging){S.dragging=false;S.dragLinked=[];scheduleAutoSave();return}
+  if(S.tool==='erase'){S.drawing=false;redrawCanvas();return}
   if(S.currentStroke&&S.currentStroke.points.length){gs().push(S.currentStroke);S.currentStroke=null;redrawCanvas();scheduleAutoSave()}
 }
 
@@ -5763,7 +5848,9 @@ function redrawCanvas(){
       pts2.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));
       ctx.stroke();
       ctx.restore();
-    } else if(s.tool==='draw'||s.tool==='erase'||s.tool==='highlight'){
+    } else if(s.tool==='erase'){
+      return;  // ancien trait de gomme : ignoré (il masquait les lignes de la page)
+    } else if(s.tool==='draw'||s.tool==='highlight'){
       if(!s.points||!s.points.length){if(isSel)ctx.restore();return;}
       const isErase=s.tool==='erase';
       const isHighlight=s.tool==='highlight';
@@ -6836,24 +6923,25 @@ const VoiceEngine = {
     if(!text){ this.cancel(); return; }
 
     if(this.mode === 'note' && S.canvas && S.ctx){
-      // Find a good Y position below existing content
-      const strokes = gs();
-      let maxY = 60;
-      strokes.forEach(s => { if(s.y && s.y > maxY) maxY = s.y + 20; });
-      // Split into lines of ~80 chars
-      const words = text.split(' ');
-      let line = '', lines = [];
-      words.forEach(w => {
-        if((line + ' ' + w).length > 80){ lines.push(line); line = w; }
-        else { line = line ? line + ' ' + w : w; }
+      // Un seul bloc de texte : le retour à la ligne automatique s'en charge.
+      // (l'ancienne version découpait à 80 caractères et utilisait S.textSize,
+      //  qui peut être indéfini en mode "Auto" → position NaN, texte invisible)
+      const g    = pageGeom();
+      const size = currentTextSize(g);
+      const lh   = textLineH(size, g);
+      let maxY = lh * 2;
+      gs().forEach(s => {
+        const b = strokeBBox(s);
+        if(b && (b.y + b.h) > maxY) maxY = b.y + b.h;
       });
-      if(line) lines.push(line);
-      lines.forEach((l, i) => {
-        gs().push({ tool:'text', x:40, y: maxY + i * (S.textSize + 6),
-          text: l, color: S.color, size: S.textSize, bold: false });
-      });
+      const y = snapBaselineY(maxY + lh, g);
+      _snapshotUndo();
+      gs().push({ tool:'text', x: g.marginX, y: y, w: defaultTextW(g),
+        text: text, color: S.color || '#1E1B4B', size: size, bold: false });
+      S.selectedIdx = gs().length - 1; S.selectedIdxs = [S.selectedIdx];
       redrawCanvas();
       scheduleAutoSave();
+      _toast('✅ Texte inséré sur la page', 'ok');
     } else if(this.mode === 'field' && this.targetField){
       const el = document.getElementById(this.targetField);
       if(el){
