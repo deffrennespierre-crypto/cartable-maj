@@ -654,7 +654,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
             <option value="blank">☐ Blanc</option>
           </select>
           <div class="xdiv"></div>
-          <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer un modèle de page (frise, tableau, portée musicale...)">📋 Modèle</button>
+          <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer une structure : frise chronologique, tableau, Cornell, carte mentale">📐 Structure</button>
           <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
           <div class="xdiv sci-tool"></div>
@@ -742,7 +742,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
             <option value="blank">☐ Blanc</option>
           </select>
           <div class="xdiv"></div>
-          <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer un modèle de page (frise, tableau, portée musicale...)">📋 Modèle</button>
+          <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer une structure : frise chronologique, tableau, Cornell, carte mentale">📐 Structure</button>
           <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ex-ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
           <div class="xdiv sci-tool"></div>
@@ -830,7 +830,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
             <option value="blank">☐ Blanc</option>
           </select>
           <div class="xdiv"></div>
-          <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer un modèle de page (frise, tableau, portée musicale...)">📋 Modèle</button>
+          <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer une structure : frise chronologique, tableau, Cornell, carte mentale">📐 Structure</button>
           <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ev-ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
           <div class="xdiv sci-tool"></div>
@@ -1054,7 +1054,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         </div>
         <div class="stsec">
           <h3>🔄 Mises à jour</h3>
-          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.2.2</b></div>
+          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.2.4</b></div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
             <div style="flex:1;min-width:190px">
               <div style="font-size:13px;font-weight:700">Version installée : <span id="current-version" style="color:var(--pr)">…</span></div>
@@ -1139,16 +1139,12 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
 <!-- ══ PAGE TEMPLATE MODAL ══ -->
 <div class="modal-bg" id="template-modal" style="display:none" onclick="if(event.target===this)document.getElementById('template-modal').style.display='none'">
   <div class="modal" style="max-width:560px">
-    <div class="modal-head"><div class="modal-title">📋 Modèles de page</div><button class="bi btn-xs" onclick="document.getElementById('template-modal').style.display='none'">✕</button></div>
+    <div class="modal-head"><div class="modal-title">📐 Insérer une structure</div><button class="bi btn-xs" onclick="document.getElementById('template-modal').style.display='none'">✕</button></div>
     <div class="modal-body">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
-        <button class="tpl-btn" onclick="applyTemplate('lines')" data-tip="Page lignes classiques">📄<br><small>Lignes</small></button>
-        <button class="tpl-btn" onclick="applyTemplate('grid')" data-tip="Page carreaux">▦<br><small>Carreaux</small></button>
-        <button class="tpl-btn" onclick="applyTemplate('blank')" data-tip="Page blanche">☐<br><small>Blanc</small></button>
         <button class="tpl-btn" onclick="applyTemplate('timeline')" data-tip="Frise chronologique">📅<br><small>Frise chron.</small></button>
         <button class="tpl-btn" onclick="applyTemplate('table2')" data-tip="Tableau 2 colonnes">📊<br><small>Tableau 2 col.</small></button>
         <button class="tpl-btn" onclick="applyTemplate('table3')" data-tip="Tableau 3 colonnes">📊<br><small>Tableau 3 col.</small></button>
-        <button class="tpl-btn" onclick="applyTemplate('music')" data-tip="Portée musicale">🎵<br><small>Portée musique</small></button>
         <button class="tpl-btn" onclick="applyTemplate('cornell')" data-tip="Méthode Cornell — prise de notes efficace">📝<br><small>Cornell</small></button>
         <button class="tpl-btn" onclick="applyTemplate('mindmap')" data-tip="Carte mentale — centre + branches">🧠<br><small>Carte mentale</small></button>
       </div>
@@ -1565,7 +1561,7 @@ let S={
   saveTimer:null,saveSessionId:null,
   sidebarCol:false,subjCol:false,treeCol:false,hwPriority:'normal',hwModalDate:null,
   resizing:false,resizeHandle:null,resizeOrig:null,_justCommitted:false,_rteToolbarFocused:false,
-  pageBg:'lines',// 'lines'|'grid'|'dots'|'blank'
+  pageBg:'lines',pageBgs:[],// fond par page
   textAuto:false,
   hlColor:'#FDE047', hlSize:20, dragLinked:[], resizingText:null, a11yFont:'Nunito,sans-serif',
   postits:[],
@@ -1734,73 +1730,117 @@ function initDarkMode(){
 function openTemplateModal(){
   document.getElementById('template-modal').style.display='flex';
 }
+// ═══════════════════════════════════════════════════════════════════
+// STRUCTURES DE PAGE — cadres, titres et zones de texte prêtes à remplir
+// (l'ancienne version ne posait que des traits nus, sans indication)
+// ═══════════════════════════════════════════════════════════════════
+function _tplTitle(txt, x, y, size, color){
+  return {tool:'text', x:x, y:y, text:txt, color:color||'#4F46E5',
+          size:size||18, bold:true, w:600};
+}
+function _tplNote(txt, x, y, w, size, color){
+  return {tool:'text', x:x, y:y, text:txt, color:color||'#9C96C8',
+          size:size||12, bold:false, w:w||300};
+}
+function _tplLine(x1,y1,x2,y2,color,size){
+  return {tool:'draw', color:color||'#4F46E5', size:size||2, points:[{x:x1,y:y1},{x:x2,y:y2}]};
+}
+function _tplBox(x,y,w,h,color,size){
+  return {tool:'draw', color:color||'#C4C0E0', size:size||1.5,
+          points:[{x:x,y:y},{x:x+w,y:y},{x:x+w,y:y+h},{x:x,y:y+h},{x:x,y:y}]};
+}
+
 function applyTemplate(type){
-  document.getElementById('template-modal').style.display='none';
-  const ctx=S.ctx,c=S.canvas;if(!ctx)return;
-  const W=c.width,H=c.height;
-  // Add template strokes to current page
-  const strokes=[];
+  const modal = document.getElementById('template-modal');
+  if(modal) modal.style.display='none';
+  const c = S.canvas; if(!c || !S.ctx) return;
+  const W = c.width, H = c.height;
+  const A = '#4F46E5', G = '#C4C0E0', L = '#E2E0F0', N = '#9C96C8';
+  const strokes = [];
+
   if(type==='timeline'){
-    // Frise chronologique
-    const y=H*0.45;
-    strokes.push({tool:'draw',color:'#4F46E5',size:3,points:[{x:60,y},{x:W-60,y}]});
-    for(let x=100;x<W-60;x+=140){
-      strokes.push({tool:'draw',color:'#4F46E5',size:2,points:[{x,y:y-20},{x,y:y+20}]});
+    // ── Frise chronologique : axe fléché, graduations datées ──
+    const y = Math.round(H*0.42);
+    strokes.push(_tplTitle('Frise chronologique', 60, 60, 20, A));
+    strokes.push(_tplNote('Écris les dates sous l\'axe et les événements au-dessus.', 60, 88, 620, 12, N));
+    strokes.push(_tplLine(60, y, W-70, y, A, 3));
+    // pointe de flèche
+    strokes.push({tool:'draw', color:A, size:3,
+      points:[{x:W-90,y:y-9},{x:W-62,y:y},{x:W-90,y:y+9}]});
+    const step = Math.floor((W-200)/5);
+    for(let k=0;k<5;k++){
+      const x = 120 + k*step;
+      strokes.push(_tplLine(x, y-16, x, y+16, A, 2));
+      strokes.push(_tplNote('……', x-14, y+42, 90, 13, N));      // date
+      strokes.push(_tplNote('……', x-14, y-40, 90, 13, N));      // événement
     }
-  } else if(type==='table2'){
-    const midX=W/2;
-    // Header line
-    strokes.push({tool:'draw',color:'#4F46E5',size:2,points:[{x:40,y:80},{x:W-40,y:80}]});
-    // Vertical divider
-    strokes.push({tool:'draw',color:'#C4C0E0',size:1.5,points:[{x:midX,y:40},{x:midX,y:H-40}]});
-    // Horizontal lines
-    for(let y=120;y<H-40;y+=36){strokes.push({tool:'draw',color:'#E2E0F0',size:0.8,points:[{x:40,y},{x:W-40,y}]});}
-  } else if(type==='table3'){
-    const c1=W/3,c2=W*2/3;
-    strokes.push({tool:'draw',color:'#4F46E5',size:2,points:[{x:40,y:80},{x:W-40,y:80}]});
-    strokes.push({tool:'draw',color:'#C4C0E0',size:1.5,points:[{x:c1,y:40},{x:c1,y:H-40}]});
-    strokes.push({tool:'draw',color:'#C4C0E0',size:1.5,points:[{x:c2,y:40},{x:c2,y:H-40}]});
-    for(let y=120;y<H-40;y+=36){strokes.push({tool:'draw',color:'#E2E0F0',size:0.8,points:[{x:40,y},{x:W-40,y}]});}
-  } else if(type==='music'){
-    // 4 groups of 5 staff lines
-    for(let group=0;group<4;group++){
-      const baseY=120+group*180;
-      for(let l=0;l<5;l++){
-        const y=baseY+l*14;
-        strokes.push({tool:'draw',color:'#6B7280',size:0.8,points:[{x:60,y},{x:W-60,y}]});
-      }
+
+  } else if(type==='table2' || type==='table3'){
+    // ── Tableau : en-têtes encadrés, lignes régulières ──
+    const cols = (type==='table2') ? 2 : 3;
+    const x0 = 55, x1 = W-55, top = 110, rowH = 40;
+    const colW = (x1-x0)/cols;
+    strokes.push(_tplTitle('Tableau à ' + cols + ' colonnes', 55, 60, 20, A));
+    // cadre extérieur
+    const bottom = top + rowH*Math.floor((H-top-60)/rowH);
+    strokes.push(_tplBox(x0, top, x1-x0, bottom-top, A, 2));
+    // bandeau d'en-tête
+    strokes.push(_tplLine(x0, top+rowH, x1, top+rowH, A, 2));
+    for(let k=1;k<cols;k++){
+      strokes.push(_tplLine(x0+k*colW, top, x0+k*colW, bottom, G, 1.5));
     }
+    for(let y=top+rowH*2; y<bottom; y+=rowH){
+      strokes.push(_tplLine(x0, y, x1, y, L, 0.9));
+    }
+    for(let k=0;k<cols;k++){
+      strokes.push(_tplNote('Titre ' + (k+1), x0+k*colW+14, top+27, colW-28, 14, A));
+    }
+
   } else if(type==='cornell'){
-    // Cornell note-taking: left margin, bottom summary
-    strokes.push({tool:'draw',color:'#EF4444',size:1.5,points:[{x:220,y:40},{x:220,y:H-140}]});
-    strokes.push({tool:'draw',color:'#EF4444',size:1.5,points:[{x:40,y:H-140},{x:W-40,y:H-140}]});
-    // Lines in main area
-    for(let y=70;y<H-150;y+=32){strokes.push({tool:'draw',color:'#E2E0F0',size:0.7,points:[{x:230,y},{x:W-40,y}]});}
-    // Lines in left margin
-    for(let y=70;y<H-150;y+=32){strokes.push({tool:'draw',color:'#F0EFFF',size:0.6,points:[{x:40,y},{x:210,y}]});}
+    // ── Méthode Cornell : questions / notes / synthèse ──
+    const mx = 250, by = H-170, top = 110;
+    strokes.push(_tplTitle('Prise de notes — méthode Cornell', 55, 58, 19, A));
+    strokes.push(_tplBox(55, top, W-110, by-top, G, 1.5));
+    strokes.push(_tplLine(mx, top, mx, by, '#EF4444', 1.5));
+    strokes.push(_tplLine(55, by, W-55, by, '#EF4444', 1.5));
+    strokes.push(_tplBox(55, by, W-110, 120, G, 1.5));
+    strokes.push(_tplNote('Questions / mots-clés', 68, top+26, 170, 13, '#EF4444'));
+    strokes.push(_tplNote('Notes du cours', mx+16, top+26, 300, 13, A));
+    strokes.push(_tplNote('Ce que je retiens (résumé en 3 lignes)', 68, by+28, 400, 13, '#EF4444'));
+    for(let y=top+52; y<by-14; y+=32){
+      strokes.push(_tplLine(mx+14, y, W-70, y, L, 0.8));
+    }
+
   } else if(type==='mindmap'){
-    // Mind map: center circle + branch lines
-    const cx=W/2,cy=H/2;
-    // Center circle (drawn as arc points)
-    const pts=[];
-    for(let a=0;a<=360;a+=5){pts.push({x:cx+80*Math.cos(a*Math.PI/180),y:cy+50*Math.sin(a*Math.PI/180)});}
-    strokes.push({tool:'draw',color:'#4F46E5',size:2.5,points:pts});
-    // 6 branch lines
-    const angles=[0,60,120,180,240,300];
-    angles.forEach(a=>{
-      const rad=a*Math.PI/180;
-      const x1=cx+85*Math.cos(rad),y1=cy+55*Math.sin(rad);
-      const x2=cx+220*Math.cos(rad),y2=cy+150*Math.sin(rad);
-      strokes.push({tool:'draw',color:'#7C3AED',size:2,points:[{x:x1,y:y1},{x:x2,y:y2}]});
+    // ── Carte mentale : centre + 6 bulles à remplir ──
+    const cx = W/2, cy = H/2;
+    strokes.push(_tplTitle('Carte mentale', 55, 52, 19, A));
+    const ell = (ex,ey,rx,ry,col,sz)=>{
+      const p=[]; for(let a=0;a<=360;a+=6){
+        p.push({x:ex+rx*Math.cos(a*Math.PI/180), y:ey+ry*Math.sin(a*Math.PI/180)});
+      }
+      return {tool:'draw', color:col, size:sz, points:p};
+    };
+    strokes.push(ell(cx, cy, 95, 55, A, 2.5));
+    strokes.push(_tplNote('Idée centrale', cx-60, cy+5, 130, 15, A));
+    const dirs = [[-1,-1],[1,-1],[-1.35,0],[1.35,0],[-1,1],[1,1]];
+    dirs.forEach(function(d){
+      const bx = cx + d[0]*230, by2 = cy + d[1]*130;
+      strokes.push(_tplLine(cx + d[0]*80, cy + d[1]*42, bx - d[0]*68, by2 - d[1]*26, '#7C3AED', 2));
+      strokes.push(ell(bx, by2, 68, 34, '#7C3AED', 1.8));
+      strokes.push(_tplNote('……', bx-16, by2+5, 60, 13, N));
     });
+
   } else {
-    // For lines/grid/blank/dots: just change page background
-    setPageBg(type);return;
+    // fonds simples : c'est la liste déroulante qui s'en charge
+    setPageBg(type); return;
   }
-  // Push all strokes at beginning (background)
-  strokes.forEach(s=>gs().unshift(s));
-  redrawCanvas();scheduleAutoSave();
-  _toast('📋 Modèle appliqué !','ok');
+
+  _snapshotUndo();
+  strokes.forEach(s => gs().unshift(s));   // en arrière-plan
+  S.selectedIdx = -1; S.selectedIdxs = [];
+  redrawCanvas(); scheduleAutoSave();
+  _toast('📐 Structure insérée — clique sur un texte pour le remplacer', 'ok');
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -3486,11 +3526,11 @@ function initEditor(sess,sub){
   document.getElementById('fullscreen-btn').style.display='inline-flex';
   document.getElementById('pgdel-btn').style.display='inline-flex';
   // Load pages — support v1 (bare array) and v2 ({pages:[…],v:2})
-  S.pages=[[]];S.curPage=0;S.pageBg='lines';
+  S.pages=[[]];S.curPage=0;S.pageBg='lines';S.pageBgs=[];
   if(sess.canvas_data){try{
     const p=JSON.parse(sess.canvas_data);
     if(Array.isArray(p)){S.pages=[p];}
-    else if(p&&Array.isArray(p.pages)){S.pages=p.pages;}
+    else if(p&&Array.isArray(p.pages)){S.pages=p.pages;S.pageBgs=Array.isArray(p.pageBgs)?p.pageBgs.slice():[];}
   }catch{}}
   if(!S.pages.length)S.pages=[[]];
   S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;
@@ -3520,12 +3560,12 @@ function renderPageBar(){
   bar.innerHTML=S.pages.map((_,i)=>`<button class="ptab ${i===S.curPage?'active':''}" onclick="goPage(${i})" title="Aller à la page ${i+1}">Page ${i+1}</button>`).join('')
     +`<button class="ptab" onclick="addPage()" data-tip="Ajouter une nouvelle page vierge">+ Page</button>`;
 }
-function goPage(i){commitText();saveCanvas(false);S.curPage=i;S.selectedIdx=-1;S.selectedIdxs=[];buildCanvas();renderPageBar();_syncBgSel();}
-function addPage(){S.pages.push([]);saveCanvas(false);goPage(S.pages.length-1);}function _syncBgSel(){const sel=document.getElementById('bg-sel');if(sel)sel.value=S.pageBg||'lines';}
+function goPage(i){commitText();saveCanvas(false);S.curPage=i;S.selectedIdx=-1;S.selectedIdxs=[];buildCanvas();renderPageBar();syncBgSelector();}
+function addPage(){const bg=curPageBg();S.pages.push([]);if(!S.pageBgs)S.pageBgs=[];S.pageBgs[S.pages.length-1]=bg;saveCanvas(false);goPage(S.pages.length-1);}function _syncBgSel(){syncBgSelector();}
 function deleteCurPage(){
   if(S.pages.length<=1)return alert('Il faut garder au moins une page !');
   if(!confirm('Supprimer la page '+(S.curPage+1)+' ?'))return;
-  S.pages.splice(S.curPage,1);S.curPage=Math.max(0,S.curPage-1);buildCanvas();renderPageBar();saveCanvas(false);
+  S.pages.splice(S.curPage,1);if(S.pageBgs)S.pageBgs.splice(S.curPage,1);S.curPage=Math.max(0,S.curPage-1);buildCanvas();renderPageBar();saveCanvas(false);
 }
 
 
@@ -5431,6 +5471,28 @@ function inkColor(c){
   return c;
 }
 
+
+// ═══════════════════════════════════════════════════════════════════
+// FOND DE PAGE — un réglage PAR PAGE (et non par séance)
+// S.pageBgs[i] = fond de la page i ; S.pageBg reste le fond courant.
+// ═══════════════════════════════════════════════════════════════════
+function curPageBg(){
+  if(!S.pageBgs) S.pageBgs = [];
+  return S.pageBgs[S.curPage] || S.pageBg || 'lines';
+}
+function setCurPageBg(v){
+  if(!S.pageBgs) S.pageBgs = [];
+  S.pageBgs[S.curPage] = v;
+  S.pageBg = v;                      // compatibilité avec le code existant
+}
+function syncBgSelector(){
+  const v = curPageBg();
+  ['bg-sel','ex-bg-sel','ev-bg-sel'].forEach(function(id){
+    const sel = document.getElementById(id);
+    if(sel) sel.value = v;
+  });
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // INFOBULLES — une seule boîte, recadrée dans la fenêtre
 // ═══════════════════════════════════════════════════════════════════
@@ -6144,7 +6206,7 @@ function sendToFront(){
 function sendImgBack(){sendToBack();}
 
 // ══ REDRAW ════════════════════════════════════════════════════════
-function setPageBg(v){S.pageBg=v;const sel=document.getElementById('bg-sel');if(sel)sel.value=v;redrawCanvas();}
+function setPageBg(v){setCurPageBg(v);syncBgSelector();redrawCanvas();scheduleAutoSave();}
 
 
 // ── Image cache: avoids async onload overwriting text ─────────────
@@ -6162,7 +6224,7 @@ function redrawCanvas(){
   const ctx=S.ctx,c=S.canvas;if(!ctx)return;
   ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle=document.body.classList.contains('dark')?'#1C1A2E':'#FFFEF6';ctx.fillRect(0,0,c.width,c.height);
   // Page background
-  const bg=S.pageBg||'lines';
+  const bg=curPageBg();
   if(bg==='lines'){
     ctx.strokeStyle='#D4D0E8';ctx.lineWidth=.8;
     for(let y=32;y<c.height;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
@@ -6389,7 +6451,7 @@ async function saveCanvas(showOk=true){
   try{
     const v=S.view;
     const ep=v==='exercises'?'/api/ex-sessions/':v==='evaluations'?'/api/ev-sessions/':'/api/sessions/';
-    await api.put(ep+S.saveSessionId,{canvas_data:JSON.stringify({pages:S.pages,v:2})});
+    await api.put(ep+S.saveSessionId,{canvas_data:JSON.stringify({pages:S.pages,pageBgs:S.pageBgs||[],v:3})});
     if(showOk){
       const okId=v==='exercises'?'ex-save-ok':v==='evaluations'?'ev-save-ok':'save-ok';
       const el=document.getElementById(okId);
@@ -6829,11 +6891,11 @@ function exInitEditor(sess,sub){
   const fsb=document.getElementById(ids.fsbtn);if(fsb)fsb.style.display='inline-flex';
   const pgd=document.getElementById(ids.pgdelbtn);if(pgd)pgd.style.display='inline-flex';
   // Load pages
-  S.pages=[[]];S.curPage=0;S.pageBg='lines';
+  S.pages=[[]];S.curPage=0;S.pageBg='lines';S.pageBgs=[];
   if(sess.canvas_data){try{
     const p=JSON.parse(sess.canvas_data);
     if(Array.isArray(p)){S.pages=[p];}
-    else if(p&&Array.isArray(p.pages)){S.pages=p.pages;}
+    else if(p&&Array.isArray(p.pages)){S.pages=p.pages;S.pageBgs=Array.isArray(p.pageBgs)?p.pageBgs.slice():[];}
   }catch{}}
   if(!S.pages.length)S.pages=[[]];
   S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;
@@ -6874,8 +6936,8 @@ function exRenderPageBar(){
   bar.innerHTML=S.pages.map((_,i)=>`<button class="ptab ${i===S.curPage?'active':''}" onclick="exGoPage(${i})" title="Page ${i+1}">Page ${i+1}</button>`).join('')
     +`<button class="ptab" onclick="exAddPage()" data-tip="Ajouter une page">+ Page</button>`;
 }
-function exGoPage(i){commitText();saveCanvas(false);S.curPage=i;S.selectedIdx=-1;S.selectedIdxs=[];exBuildCanvas();exRenderPageBar();}
-function exAddPage(){S.pages.push([]);saveCanvas(false);exGoPage(S.pages.length-1);}
+function exGoPage(i){commitText();saveCanvas(false);S.curPage=i;S.selectedIdx=-1;S.selectedIdxs=[];exBuildCanvas();exRenderPageBar();syncBgSelector();}
+function exAddPage(){const bg=curPageBg();S.pages.push([]);if(!S.pageBgs)S.pageBgs=[];S.pageBgs[S.pages.length-1]=bg;saveCanvas(false);exGoPage(S.pages.length-1);}
 
 function exSetupSwatches(){
   const ids=exIds();
@@ -6943,8 +7005,8 @@ function evInitEditor(sess,sub){
   const tb=document.getElementById(ids.toolbar);if(tb)tb.style.display='flex';
   const fsb=document.getElementById(ids.fsbtn);if(fsb)fsb.style.display='inline-flex';
   const pgd=document.getElementById(ids.pgdelbtn);if(pgd)pgd.style.display='inline-flex';
-  S.pages=[[]];S.curPage=0;S.pageBg='lines';
-  if(sess.canvas_data){try{const p=JSON.parse(sess.canvas_data);if(Array.isArray(p))S.pages=[p];else if(p&&Array.isArray(p.pages))S.pages=p.pages;}catch{}}
+  S.pages=[[]];S.curPage=0;S.pageBg='lines';S.pageBgs=[];
+  if(sess.canvas_data){try{const p=JSON.parse(sess.canvas_data);if(Array.isArray(p))S.pages=[p];else if(p&&Array.isArray(p.pages)){S.pages=p.pages;S.pageBgs=Array.isArray(p.pageBgs)?p.pageBgs.slice():[];}}catch{}}
   if(!S.pages.length)S.pages=[[]];
   S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;
   evBuildCanvas();evRenderPageBar();
@@ -6962,8 +7024,8 @@ function evBuildCanvas(){
   txo.style.display='none';txo.style.pointerEvents='none';wrap.appendChild(txo);redrawCanvas();setupCanvasEvents();
 }
 function evRenderPageBar(){const ids=evIds();const bar=document.getElementById(ids.pagebar);if(!bar)return;bar.style.display='flex';bar.innerHTML=S.pages.map((_,i)=>`<button class="ptab ${i===S.curPage?'active':''}" onclick="evGoPage(${i})">Page ${i+1}</button>`).join('')+`<button class="ptab" onclick="evAddPage()">+ Page</button>`;}
-function evGoPage(i){commitText();saveCanvas(false);S.curPage=i;S.selectedIdx=-1;S.selectedIdxs=[];evBuildCanvas();evRenderPageBar();}
-function evAddPage(){S.pages.push([]);saveCanvas(false);evGoPage(S.pages.length-1);}
+function evGoPage(i){commitText();saveCanvas(false);S.curPage=i;S.selectedIdx=-1;S.selectedIdxs=[];evBuildCanvas();evRenderPageBar();syncBgSelector();}
+function evAddPage(){const bg=curPageBg();S.pages.push([]);if(!S.pageBgs)S.pageBgs=[];S.pageBgs[S.pages.length-1]=bg;saveCanvas(false);evGoPage(S.pages.length-1);}
 function evSetupSwatches(){
   const ids=evIds();
   const bgsel=document.getElementById(ids.bgsel);
@@ -7436,7 +7498,7 @@ function toggleBold(){
 // GÉOMÉTRIE DE PAGE — lignes, marges, interlignes
 // ═══════════════════════════════════════════════════════════════════
 function pageGeom(){
-  const bg = S.pageBg || 'lines';
+  const bg = curPageBg();
   const W  = S.canvas ? S.canvas.width : 900;
   if(bg==='lines') return {bg, lineH:32, marginX:78, rightPad:24, W};
   if(bg==='seyes') return {bg, lineH:32, marginX:86, rightPad:24, W};
@@ -7558,12 +7620,15 @@ function _placeTextOverlay(div, x, y, w, size, lh, color, bold){
      'display:block;position:absolute;'
     +'left:' + left + 'px;top:' + top + 'px;'
     +'width:' + (w * scX) + 'px;height:auto;'
-    +'font-size:' + fsPx + 'px;font-family:Nunito,sans-serif;'
+    +'font-size:' + fsPx + 'px;font-family:' + (S.a11yFont||'Nunito,sans-serif') + ';'
     +'color:' + color + ';font-weight:' + (bold?'bold':'normal') + ';'
     +'line-height:' + lhPx + 'px;min-height:' + lhPx + 'px;'
     +'white-space:pre-wrap;overflow-wrap:break-word;word-break:normal;'
     +'padding:0;margin:0;box-sizing:content-box;'
-    +'background:rgba(255,255,255,.90);border:1px dashed rgba(79,70,229,.55);'
+    +'background:' + (document.body.classList.contains('dark')
+        ? 'rgba(38,36,61,.94)' : 'rgba(255,255,255,.90)')
+      + ';border:1px dashed ' + (document.body.classList.contains('dark')
+        ? 'rgba(156,150,200,.7)' : 'rgba(79,70,229,.55)') + ';'
     +'border-radius:2px;outline:none;overflow:hidden;resize:horizontal;'
     +'z-index:10;cursor:text;pointer-events:all';
   const examOn = (typeof EXAM!=='undefined' && EXAM.active);
