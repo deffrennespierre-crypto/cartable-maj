@@ -598,7 +598,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div style="margin-left:auto;display:flex;gap:3px">
             <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
-            <button class="bi btn-xs" id="fullscreen-btn" onclick="toggleFullscreen()" data-tip="Plein écran — masque tous les panneaux" style="display:none">⛶</button>
+            <button class="bi btn-xs" id="fullscreen-btn" onclick="toggleFullscreen()" data-tip="Agrandir la page pour écrire plus confortablement">⛶ Agrandir</button>
             <button class="bi btn-xs" id="pgdel-btn" onclick="deleteCurPage()" data-tip="Supprimer la page courante" style="display:none;color:var(--er)">🗑 Pg</button>
           </div>
         </div>
@@ -656,7 +656,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div class="empty"><div class="empty-ico">✏️</div><h3>Sélectionne une séance</h3><p style="font-size:11px">Navigue dans l'arborescence à gauche.</p></div>
         </div>
         <div class="page-bar" id="page-bar" style="display:none"></div>
-        <div id="text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()"></div>
+        <div id="text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
       </div>
     </div>
 
@@ -683,7 +683,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div style="margin-left:auto;display:flex;gap:3px">
             <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
-            <button class="bi btn-xs" id="ex-fullscreen-btn" onclick="exToggleFS()" data-tip="Plein écran — masque tous les panneaux" style="display:none">⛶</button>
+            <button class="bi btn-xs" id="ex-fullscreen-btn" onclick="exToggleFS()" data-tip="Agrandir la page pour écrire plus confortablement">⛶ Agrandir</button>
             <button class="bi btn-xs" id="ex-pgdel-btn" onclick="exDelCurPage()" data-tip="Supprimer la page courante" style="display:none;color:var(--er)">🗑 Pg</button>
           </div>
         </div>
@@ -741,7 +741,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div class="empty"><div class="empty-ico">✏️</div><h3>Sélectionne un exercice</h3><p style="font-size:11px">Navigue dans l'arborescence pour ouvrir tes exercices.</p></div>
         </div>
         <div class="page-bar" id="ex-page-bar" style="display:none"></div>
-        <div id="ex-text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()"></div>
+        <div id="ex-text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
       </div>
     </div>
 
@@ -768,7 +768,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div style="margin-left:auto;display:flex;gap:3px">
             <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
-            <button class="bi btn-xs" id="ev-fullscreen-btn" onclick="evToggleFS()" data-tip="Plein écran — masque tous les panneaux" style="display:none">⛶</button>
+            <button class="bi btn-xs" id="ev-fullscreen-btn" onclick="evToggleFS()" data-tip="Agrandir la page pour écrire plus confortablement">⛶ Agrandir</button>
             <button class="bi btn-xs" id="ev-pgdel-btn" onclick="evDelCurPage()" data-tip="Supprimer la page courante" style="display:none;color:var(--er)">🗑 Pg</button>
           </div>
         </div>
@@ -826,7 +826,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <div class="empty"><div class="empty-ico">✏️</div><h3>Sélectionne une évaluation</h3><p style="font-size:11px">Navigue dans l'arborescence pour ouvrir tes exercices.</p></div>
         </div>
         <div class="page-bar" id="ev-page-bar" style="display:none"></div>
-        <div id="ev-text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()"></div>
+        <div id="ev-text-overlay" class="rte-overlay" contenteditable="true" spellcheck="false" onblur="setTimeout(()=>{if(!S._rteToolbarFocused)commitText();},50)" onkeydown="textKeyDown(event)" onmouseup="rteCheckSel()" onkeyup="rteCheckSel()" onfocus="setTimeout(rteCheckSel,20)"></div>
       </div>
     </div>
 
@@ -1025,6 +1025,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         </div>
         <div class="stsec">
           <h3>🔄 Mises à jour</h3>
+          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.1.2f</b></div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
             <div style="flex:1;min-width:190px">
               <div style="font-size:13px;font-weight:700">Version installée : <span id="current-version" style="color:var(--pr)">…</span></div>
@@ -1465,8 +1466,8 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         </div>
       </div>
     </div>
-
-
+  </div>
+</div>
 
 <!-- AI Popup -->
 <div class="gpt-pop" id="gpt-popup" style="display:none;top:180px;left:auto;right:20px">
@@ -1517,7 +1518,7 @@ let S={
   weekOffset:0,hwFilter:'pending',editMode:false,
   selSubjectId:null,lessons:[],chapters:[],sessions:[],
   selSessionId:null,expandedL:new Set(),expandedC:new Set(),
-  canvas:null,ctx:null,tool:'draw',color:'#1E1B4B',brushSize:4,textSize:16,bold:false,
+  canvas:null,ctx:null,tool:'select',color:'#1E1B4B',brushSize:4,textSize:16,bold:false,
   pages:[[]],curPage:0,
   currentStroke:null,selectedIdx:-1,selectedIdxs:[],
   drawing:false,lastX:0,lastY:0,dragging:false,dragOX:0,dragOY:0,
@@ -2809,7 +2810,7 @@ function toggleFullscreen(){
   const n=document.getElementById('v-notes');
   const on=n.classList.toggle('fullscreen-mode');
   const btn=document.getElementById('fullscreen-btn');
-  if(btn)btn.textContent=on?'✕':'⛶';
+  if(btn)btn.textContent=on?'✕ Réduire':'⛶ Agrandir';
 }
 
 // ═══ HOLIDAY HELPERS ════════════════════════════════════════
@@ -3228,7 +3229,8 @@ function initEditor(sess,sub){
     else if(p&&Array.isArray(p.pages)){S.pages=p.pages;}
   }catch{}}
   if(!S.pages.length)S.pages=[[]];
-  S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;S.tool='draw';
+  S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;
+  setTool('select');
   buildCanvas();renderPageBar();setupColorSwatches();
   const bgSel=document.getElementById('bg-sel');if(bgSel)bgSel.value=S.pageBg||'lines';
   setTool('draw');
@@ -3621,24 +3623,27 @@ function _mlMeasure(ctx, node, size){
     ctx.font = /[0-9+\-=<>≤≥×÷()[\],.]/.test(node.v)
       ? size + 'px "Times New Roman",Georgia,serif' : F(size);
     node.w = ctx.measureText(node.v).width;
-    node.a = size * 0.72; node.d = size * 0.24; node.size = size;
+    node.a = size * 0.72; node.dp = size * 0.24; node.size = size;
     return node;
   }
   if(node.t === 'row'){
     let w = 0, a = size * 0.72, d = size * 0.24;
     node.c.forEach(function(k){
       _mlMeasure(ctx, k, size);
-      w += k.w; a = Math.max(a, k.a); d = Math.max(d, k.d);
+      w += k.w; a = Math.max(a, k.a); d = Math.max(d, k.dp);
     });
-    node.w = w; node.a = a; node.d = d; node.size = size;
+    node.w = w; node.a = a; node.dp = d; node.size = size;
     return node;
   }
   if(node.t === 'frac'){
+    // ATTENTION : node.d est le DÉNOMINATEUR (un nœud), pas la descente.
+    // La descente se range dans node.dp, sinon on écrase le dénominateur
+    // et il n'est plus dessiné du tout.
     const s2 = size * 0.92;
     _mlMeasure(ctx, node.n, s2); _mlMeasure(ctx, node.d, s2);
     node.w = Math.max(node.n.w, node.d.w) + size * 0.4;
-    node.a = node.n.a + node.n.d + size * 0.30;
-    node.d = node.d.a + node.d.d + size * 0.18;
+    node.a = node.n.a + node.n.dp + size * 0.30;
+    node.dp = node.d.a + node.d.dp + size * 0.18;
     node.size = size;
     return node;
   }
@@ -3647,8 +3652,8 @@ function _mlMeasure(ctx, node, size){
     const inner = node.a;
     node.w = inner.w + size * 0.75 + size * 0.18;
     node.aa = inner.a + size * 0.22;      // hauteur au-dessus
-    node.dd = inner.d;
-    node.a = node.aa; node.d = node.dd; node.size = size;
+    node.dd = inner.dp;
+    node.a = node.aa; node.dp = node.dd; node.size = size;
     node.inner = inner;
     return node;
   }
@@ -3658,15 +3663,15 @@ function _mlMeasure(ctx, node, size){
     node.w = node.b.w + node.e.w + 1;
     if(node.t === 'sup'){
       node.a = Math.max(node.b.a, size * 0.48 + node.e.a);
-      node.d = node.b.d;
+      node.dp = node.b.dp;
     } else {
       node.a = node.b.a;
-      node.d = Math.max(node.b.d, size * 0.30 + node.e.d);
+      node.dp = Math.max(node.b.dp, size * 0.30 + node.e.dp);
     }
     node.size = size;
     return node;
   }
-  node.w = 0; node.a = 0; node.d = 0;
+  node.w = 0; node.a = 0; node.dp = 0;
   return node;
 }
 
@@ -3689,7 +3694,7 @@ function _mlDraw(ctx, node, x, y, color){
   if(node.t === 'frac'){
     const cx = x + node.w / 2;
     const barY = y - size * 0.28;
-    _mlDraw(ctx, node.n, cx - node.n.w / 2, barY - node.n.d - size * 0.12, color);
+    _mlDraw(ctx, node.n, cx - node.n.w / 2, barY - node.n.dp - size * 0.12, color);
     _mlDraw(ctx, node.d, cx - node.d.w / 2, barY + node.d.a + size * 0.16, color);
     ctx.strokeStyle = color;
     ctx.lineWidth = Math.max(1, size / 16);
@@ -3738,7 +3743,7 @@ function mathMeasure(ml, size){
   const ctx = c.getContext('2d');
   const tree = _mlParse(ml || '');
   _mlMeasure(ctx, tree, size);
-  return { tree: tree, w: tree.w, h: tree.a + tree.d, a: tree.a };
+  return { tree: tree, w: tree.w, h: tree.a + tree.dp, a: tree.a };
 }
 
 // Objet canvas : {tool:'math', x,y,w,h, ml, size, color}
@@ -5905,6 +5910,13 @@ async function saveCanvas(showOk=true){
 }
 
 // ═══ AI ════════════════════════════════════════════════════
+
+// Ferme le popup d'explication IA
+function closeGpt(){
+  const p = document.getElementById('gpt-popup');
+  if(p) p.style.display = 'none';
+}
+
 function _aiPrompt(text){
   return 'Explique simplement, pour un collégien, en français : ' + text;
 }
@@ -6232,7 +6244,7 @@ function exIds(){
 // Panel toggles
 function exToggleSubjPanel(){S.exSubjCol=!S.exSubjCol;document.getElementById('ex-nsp').classList.toggle('collapsed',S.exSubjCol);}
 function exToggleTree(){S.exTreeCol=!S.exTreeCol;document.getElementById('ex-ntp').classList.toggle('collapsed',S.exTreeCol);document.getElementById('ex-tree-col-btn').textContent=S.exTreeCol?'▶':'◀';}
-function exToggleFS(){const v=document.getElementById('v-exercises');const on=v.classList.toggle('ex-fullscreen-mode');const ebtn=document.getElementById('ex-fullscreen-btn');if(ebtn)ebtn.textContent=on?'✕':'⛶';}
+function exToggleFS(){const v=document.getElementById('v-exercises');const on=v.classList.toggle('ex-fullscreen-mode');const ebtn=document.getElementById('ex-fullscreen-btn');if(ebtn)ebtn.textContent=on?'✕ Réduire':'⛶ Agrandir';}
 function exDelCurPage(){deleteCurPage();} // shared canvas state
 
 // Subject list
@@ -6331,7 +6343,7 @@ function exInitEditor(sess,sub){
     else if(p&&Array.isArray(p.pages)){S.pages=p.pages;}
   }catch{}}
   if(!S.pages.length)S.pages=[[]];
-  S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;
+  S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;S.tool='select';
   // Build canvas in the exercises canvas wrap
   exBuildCanvas();
   exRenderPageBar();
@@ -6392,7 +6404,7 @@ function exUpdSwatches(){
 function evIds(){return{canvasWrap:'ev-canvas-wrap',toolbar:'ev-editor-toolbar',breadcrumb:'ev-editor-breadcrumb',fsbtn:'ev-fullscreen-btn',pgdelbtn:'ev-pgdel-btn',pagebar:'ev-page-bar',txo:'ev-text-overlay',saveok:'ev-save-ok',colsw:'ev-color-swatches',custcol:'ev-custom-color',brushsz:'ev-brush-size',txtsz:'ev-text-size',ttbtn:'ev-txt-toolbar',ttcol:'ev-tt-color',ttsize:'ev-tt-size',ttbold:'ev-tt-bold',bgsel:'ev-bg-sel',micbtn:'ev-mic-notes-btn'};}
 function evToggleSubjPanel(){S.evSubjCol=!S.evSubjCol;document.getElementById('ev-nsp').classList.toggle('collapsed',S.evSubjCol);}
 function evToggleTree(){S.evTreeCol=!S.evTreeCol;document.getElementById('ev-ntp').classList.toggle('collapsed',S.evTreeCol);document.getElementById('ev-tree-col-btn').textContent=S.evTreeCol?'▶':'◀';}
-function evToggleFS(){const v=document.getElementById('v-evaluations');const on=v.classList.toggle('ev-fullscreen-mode');const evbtn=document.getElementById('ev-fullscreen-btn');if(evbtn)evbtn.textContent=on?'✕':'⛶';}
+function evToggleFS(){const v=document.getElementById('v-evaluations');const on=v.classList.toggle('ev-fullscreen-mode');const evbtn=document.getElementById('ev-fullscreen-btn');if(evbtn)evbtn.textContent=on?'✕ Réduire':'⛶ Agrandir';}
 function evDelCurPage(){deleteCurPage();}
 function evRenderSubjList(){const el=document.getElementById('ev-subj-list');if(!el)return;el.innerHTML=S.subjects.map(s=>`<div class="subj-item ${S.evSelSubjId===s.id?'active':''}" onclick="evSelSubj(${s.id})" title="${s.name}"><div class="subj-ico" style="background:${s.color}">${s.icon}</div><div style="min-width:0"><div style="font-size:11px;font-weight:800;color:${S.evSelSubjId===s.id?s.color:'var(--tx)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div></div></div>`).join('');}
 async function evSelSubj(id){
@@ -6439,7 +6451,8 @@ function evInitEditor(sess,sub){
   S.pages=[[]];S.curPage=0;S.pageBg='lines';
   if(sess.canvas_data){try{const p=JSON.parse(sess.canvas_data);if(Array.isArray(p))S.pages=[p];else if(p&&Array.isArray(p.pages))S.pages=p.pages;}catch{}}
   if(!S.pages.length)S.pages=[[]];
-  S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;S.tool='draw';
+  S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;
+  setTool('select');
   evBuildCanvas();evRenderPageBar();evSetupSwatches();
   setTool('draw');
 }
@@ -6891,7 +6904,11 @@ function showTxtToolbar(s, e){
   const eids = activeEditorIds();
   const tb = document.getElementById(eids.ttb);
   if(!tb) return;
-  tb.style.cssText = `display:flex;top:${Math.max(4,e.clientY-50)}px;left:${Math.min(e.clientX, window.innerWidth-260)}px`;
+  // Affectations ciblées : cssText effacerait position:fixed défini en CSS.
+  tb.style.position = 'fixed';
+  tb.style.display  = 'flex';
+  tb.style.top  = Math.max(4, e.clientY - 50) + 'px';
+  tb.style.left = Math.min(e.clientX, window.innerWidth - 260) + 'px';
   const tcol = document.getElementById(eids.ttcol); if(tcol) tcol.value = s.color||'#1E1B4B';
   const tsz  = document.getElementById(eids.ttsz);  if(tsz)  tsz.value  = s.size||16;
   const tbold= document.getElementById(eids.ttbold); if(tbold) tbold.style.fontWeight = s.bold?'900':'400';
@@ -7073,6 +7090,7 @@ function showTextOverlay(cx, cy){
   S.activeText = true; S.editingIdx = -1;
   S._textX = x; S._textY = y; S._textW = w; S._textSizeUsed = size;
   div.focus(); _syncRteSizeBtn();
+  setTimeout(rteCheckSel, 30);   // barre d'outils visible dès la saisie
 }
 
 function startEditTxt(idx){
@@ -7090,6 +7108,7 @@ function startEditTxt(idx){
   S.activeText = true; S.editingIdx = idx;
   S._textX = s.x; S._textY = s.y; S._textW = w; S._textSizeUsed = size;
   s._hidden = true; redrawCanvas(); div.focus(); _syncRteSizeBtn();
+  setTimeout(rteCheckSel, 30);   // barre d'outils visible dès la saisie
 }
 
 function commitText(){
@@ -7174,26 +7193,52 @@ function _rteAutoGrow(div){
 // ── Formatting toolbar ─────────────────────────────────────────────
 
 function rteCheckSel(){
+  try { _rteCheckSelInner(); } catch(e) {}
+}
+function _rteCheckSelInner(){
   const sel = window.getSelection();
   if(sel && !sel.isCollapsed && sel.rangeCount > 0){
-    _rteShowToolbar(sel);
+    _rteShowToolbar(sel);          // sélection : barre au-dessus du texte choisi
+  } else if(S.activeText){
+    _rteShowToolbar(sel, true);    // simple curseur : barre visible quand même
   } else {
     _rteHideToolbar();
   }
 }
 
-function _rteShowToolbar(sel){
+function _rteShowToolbar(sel, caretOnly){
   const tb = document.getElementById('rte-toolbar');
   if(!tb) return;
-  // Position above the selection
-  const range = sel.getRangeAt(0);
-  const rect = range.getBoundingClientRect();
-  const tbW = 340;
-  const left = Math.max(4, Math.min(rect.left + rect.width/2 - tbW/2, window.innerWidth - tbW - 8));
-  const top  = Math.max(4, rect.top - 50);
-  tb.style.cssText = `display:flex;left:${left}px;top:${top}px`;
-  // Sync state indicators
-  _syncRteToolbar();
+  // Filet de sécurité : si un innerHTML a détaché la barre du document,
+  // elle garde ses styles mais mesure 0x0 et reste invisible. On la rattache.
+  if(!document.body.contains(tb)) document.body.appendChild(tb);
+  // Position : au-dessus de la sélection, ou au-dessus de la zone de saisie
+  let rect = null;
+  try{
+    if(sel && sel.rangeCount) rect = sel.getRangeAt(0).getBoundingClientRect();
+  }catch(e){}
+  // Un curseur seul donne un rectangle vide : on se cale sur la zone de texte
+  if(!rect || (!rect.width && !rect.height)){
+    const eids = activeEditorIds();
+    const div = document.getElementById(eids.txo);
+    if(div) rect = div.getBoundingClientRect();
+  }
+  if(!rect) return;
+  const tbW = 340, tbH = 44, M = 6;
+  const left = Math.max(M, Math.min(rect.left + rect.width/2 - tbW/2, window.innerWidth - tbW - M));
+  // Au-dessus si la place existe, sinon juste en dessous : la barre ne doit
+  // jamais sortir de l'écran (sinon le bouton formule semble absent).
+  let top = rect.top - tbH - M;
+  if(top < M) top = Math.min(rect.bottom + M, window.innerHeight - tbH - M);
+  top = Math.max(M, Math.min(top, window.innerHeight - tbH - M));
+  // NE PAS utiliser cssText : il efface tout le style, y compris position:fixed
+  // hérité du CSS, ce qui réduisait la barre à 0x0 pixel (invisible).
+  tb.style.position = 'fixed';
+  tb.style.display  = 'flex';
+  tb.style.left     = left + 'px';
+  tb.style.top      = top + 'px';
+  // Synchro des indicateurs : ne doit jamais empêcher l'affichage
+  try { _syncRteToolbar(); } catch(e) {}
 }
 
 function _rteHideToolbar(){
@@ -7202,10 +7247,15 @@ function _rteHideToolbar(){
 }
 
 function _syncRteToolbar(){
+  // queryCommandState lève une exception si le curseur n'est pas dans une zone
+  // éditable : sans ce garde-fou, l'affichage de la barre est interrompu.
   ['bold','italic','underline'].forEach(cmd=>{
     const id = 'rte-' + cmd[0];
     const btn = document.getElementById(id);
-    if(btn) btn.classList.toggle('active', document.queryCommandState(cmd));
+    if(!btn) return;
+    let on = false;
+    try { on = document.queryCommandState(cmd); } catch(e) {}
+    btn.classList.toggle('active', on);
   });
 }
 
@@ -7554,25 +7604,7 @@ init();
   </div>
 </div>
 
-<!-- ══ RICH TEXT TOOLBAR ══ -->
-<div id="rte-toolbar" onmousedown="S._rteToolbarFocused=true" onmouseup="setTimeout(()=>S._rteToolbarFocused=false,200)">
-  <button onclick="rteFmt('bold')"   id="rte-b"  data-tip="Gras (Ctrl+B)"><b>G</b></button>
-  <button onclick="rteFmt('italic')" id="rte-i"  data-tip="Italique (Ctrl+I)"><i>I</i></button>
-  <button onclick="rteFmt('underline')" id="rte-u" data-tip="Souligné (Ctrl+U)"><u>S</u></button>
-  <div class="sep"></div>
-  <select id="rte-size" onchange="rteFmtSize(this.value)" data-tip="Taille du texte sélectionné">
-    <option value="12">12</option><option value="14">14</option><option value="16" selected>16</option>
-    <option value="18">18</option><option value="20">20</option><option value="24">24</option>
-    <option value="28">28</option><option value="32">32</option><option value="40">40</option>
-  </select>
-  <div class="sep"></div>
-  <button id="rte-fx-btn" onmousedown="event.preventDefault()" onclick="openFxPop(event)" data-tip="Insérer une formule mathématique">∑ƒ</button>
-  <div class="sep"></div>
-  <button id="rte-color-btn" onmousedown="event.preventDefault()" onclick="openColorPopover(event)" data-tip="Couleur du texte sélectionné"><span id="rte-color-dot" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1E1B4B;border:1.5px solid rgba(0,0,0,.25);vertical-align:-1px"></span></button>
-  <div class="sep"></div>
-  <button onclick="rteApply()" data-tip="Valider et insérer sur la page" style="background:var(--pr);color:#fff;border-color:var(--pr);padding:2px 10px">✅</button>
-  <button onclick="rteCancel()" data-tip="Annuler" style="color:var(--er)">✕</button>
-</div>
+
 
 <!-- ══ VOICE POPUP ══ -->
 <div id="voice-pop" style="display:none">
@@ -7603,5 +7635,25 @@ init();
     </div>
   </div>
 </div>
+<!-- ══ RICH TEXT TOOLBAR ══ -->
+<div id="rte-toolbar" onmousedown="S._rteToolbarFocused=true" onmouseup="setTimeout(()=>S._rteToolbarFocused=false,200)">
+  <button onclick="rteFmt('bold')"   id="rte-b"  data-tip="Gras (Ctrl+B)"><b>G</b></button>
+  <button onclick="rteFmt('italic')" id="rte-i"  data-tip="Italique (Ctrl+I)"><i>I</i></button>
+  <button onclick="rteFmt('underline')" id="rte-u" data-tip="Souligné (Ctrl+U)"><u>S</u></button>
+  <div class="sep"></div>
+  <select id="rte-size" onchange="rteFmtSize(this.value)" data-tip="Taille du texte sélectionné">
+    <option value="12">12</option><option value="14">14</option><option value="16" selected>16</option>
+    <option value="18">18</option><option value="20">20</option><option value="24">24</option>
+    <option value="28">28</option><option value="32">32</option><option value="40">40</option>
+  </select>
+  <div class="sep"></div>
+  <button id="rte-fx-btn" onmousedown="event.preventDefault()" onclick="openFxPop(event)" data-tip="Insérer une formule mathématique">∑ƒ</button>
+  <div class="sep"></div>
+  <button id="rte-color-btn" onmousedown="event.preventDefault()" onclick="openColorPopover(event)" data-tip="Couleur du texte sélectionné"><span id="rte-color-dot" style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#1E1B4B;border:1.5px solid rgba(0,0,0,.25);vertical-align:-1px"></span></button>
+  <div class="sep"></div>
+  <button onclick="rteApply()" data-tip="Valider et insérer sur la page" style="background:var(--pr);color:#fff;border-color:var(--pr);padding:2px 10px">✅</button>
+  <button onclick="rteCancel()" data-tip="Annuler" style="color:var(--er)">✕</button>
+</div>
+
 </body>
 </html>
