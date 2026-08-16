@@ -1690,7 +1690,26 @@ function toggleDarkMode(){
   const isDark=document.body.classList.toggle('dark');
   localStorage.setItem('cartable-dark',isDark?'1':'0');
   _updateDarkBtn(isDark);
+  _syncInkToTheme(isDark);
   if(S.canvas&&S.ctx)redrawCanvas();
+}
+
+// L'encre du crayon suit le thème : blanc cassé en sombre, bleu nuit en clair.
+// On ne change que si l'élève n'a pas choisi une couleur vive lui-même.
+function _syncInkToTheme(isDark){
+  const c = S.color;
+  if(isDark){
+    if(!c || _isDarkInk(c)) S.color = DARK_INK;
+  } else {
+    if(!c || _isLightInk(c)) S.color = LIGHT_INK;
+  }
+  if(typeof updateColorBtn === 'function') updateColorBtn();
+  // La zone de saisie ouverte doit suivre immédiatement
+  try{
+    const ids = activeEditorIds();
+    const div = document.getElementById(ids.txo);
+    if(div && S.activeText) div.style.color = S.color;
+  }catch(e){}
 }
 function _updateDarkBtn(isDark){
   const lbl=document.getElementById('dark-btn-label');
@@ -1702,6 +1721,7 @@ function initDarkMode(){
   if(localStorage.getItem('cartable-dark')==='1'){
     document.body.classList.add('dark');
     _updateDarkBtn(true);
+    _syncInkToTheme(true);
   }
 }
 
@@ -1842,6 +1862,9 @@ async function exportCanvasPDF(){
   const origPage = S.curPage;
   const selIdx = S.selectedIdx, selIdxs = S.selectedIdxs;
   S.selectedIdx = -1; S.selectedIdxs = [];      // pas de cadre de sélection dans le PDF
+  // Toujours exporter sur fond clair : un PDF sombre est illisible à l'impression
+  const wasDark = document.body.classList.contains('dark');
+  if(wasDark) document.body.classList.remove('dark');
   const images = [];
   for(let i = 0; i < S.pages.length; i++){
     S.curPage = i;
@@ -1850,6 +1873,7 @@ async function exportCanvasPDF(){
     images.push(S.canvas.toDataURL('image/png'));
   }
   S.curPage = origPage; S.selectedIdx = selIdx; S.selectedIdxs = selIdxs;
+  if(wasDark) document.body.classList.add('dark');
   redrawCanvas();
 
   const total = images.length;
@@ -3995,7 +4019,7 @@ function drawMathObj(ctx, s){
   ctx.save();
   ctx.translate(s.x, s.y);
   ctx.scale(sc, sc);
-  _mlDraw(ctx, m.tree, 0, m.a, s.color || '#1E1B4B');
+  _mlDraw(ctx, m.tree, 0, m.a, inkColor(s.color || LIGHT_INK));
   ctx.restore();
 }
 
@@ -4506,7 +4530,7 @@ function gramInsert(){
   const plain=_gramToks.map(t=>t.w).join('');
   const g=pageGeom();
   const ok=_insertObj({tool:'text', x:g.marginX, y:snapBaselineY(120,g), w:defaultTextW(g),
-    text:plain, html:html, color:'#1E1B4B', size:currentTextSize(g), bold:false});
+    text:plain, html:html, color:(S.color||LIGHT_INK), size:currentTextSize(g), bold:false});
   if(ok) closeGramTool();
 }
 
@@ -5146,7 +5170,7 @@ function _fxRenderImg(ml, sizePx){
   c.height = Math.ceil((m.h + pad*2) * dpr);
   const ctx = c.getContext('2d');
   ctx.scale(dpr, dpr);
-  const col = document.body.classList.contains('dark') ? '#E8E6FF' : '#1E1B4B';
+  const col = inkColor(S.color || LIGHT_INK);
   _mlDraw(ctx, m.tree, pad, pad + m.a, col);
   const img = document.createElement('img');
   img.src = c.toDataURL('image/png');
@@ -5367,6 +5391,43 @@ function openKbd(){
 }
 function closeKbd(){ _closeTool('kbd-modal'); }
 
+
+// ═══════════════════════════════════════════════════════════════════
+// MODE SOMBRE — lisibilité des contenus déjà écrits
+// Les couleurs ne sont PAS modifiées dans les données : on les adapte
+// seulement à l'affichage. Repasser en clair rend les couleurs d'origine.
+// ═══════════════════════════════════════════════════════════════════
+const DARK_INK = '#E8E6FF';   // encre par défaut en mode sombre
+const LIGHT_INK = '#1E1B4B';  // encre par défaut en mode clair
+
+// Une couleur est-elle trop sombre pour être lue sur fond sombre ?
+function _isDarkInk(hex){
+  if(!hex || hex[0] !== '#') return false;
+  let h = hex.slice(1);
+  if(h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  if(h.length !== 6) return false;
+  const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  // Luminance perçue
+  return (0.299*r + 0.587*g + 0.114*b) < 90;
+}
+// Une couleur est-elle trop claire pour être lue sur fond clair ?
+function _isLightInk(hex){
+  if(!hex || hex[0] !== '#') return false;
+  let h = hex.slice(1);
+  if(h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  if(h.length !== 6) return false;
+  const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+  return (0.299*r + 0.587*g + 0.114*b) > 225;
+}
+
+// Couleur d'affichage d'un trait/texte selon le thème courant
+function inkColor(c){
+  const dark = document.body.classList.contains('dark');
+  if(dark  && _isDarkInk(c))  return DARK_INK;   // encre noire → blanc cassé
+  if(!dark && _isLightInk(c)) return LIGHT_INK;  // encre blanche → bleu nuit
+  return c;
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // INFOBULLES — une seule boîte, recadrée dans la fenêtre
 // ═══════════════════════════════════════════════════════════════════
@@ -5480,7 +5541,11 @@ function evUpdSwatches(){ updateColorBtn(); }
 
 function buildColorGrid(){
   const grid=document.getElementById('color-pop-grid'); if(!grid) return;
-  const pal = (S.tool==='highlight') ? HL_COLORS : COLORS;
+  let pal = (S.tool==='highlight') ? HL_COLORS : COLORS;
+  if(S.tool!=='highlight' && document.body.classList.contains('dark')){
+    // En mode sombre, l'encre par défaut est le blanc cassé (le noir serait illisible)
+    pal = [DARK_INK].concat(COLORS.filter(c => !_isDarkInk(c)));
+  }
   const ttl = document.getElementById('color-pop-title');
   if(ttl) ttl.textContent = (S.tool==='highlight') ? 'COULEUR DU SURLIGNEUR' : 'COULEUR';
   grid.innerHTML='';
@@ -5964,7 +6029,7 @@ function cdMove(e){
       // Aperçu transparent : on redessine la page puis le trait complet
       redrawCanvas();
       ctx.save();ctx.globalAlpha=0.28;ctx.globalCompositeOperation='multiply';
-      ctx.beginPath();ctx.strokeStyle=s.color;ctx.lineWidth=s.size;ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.beginPath();ctx.strokeStyle=isHighlight?s.color:inkColor(s.color);ctx.lineWidth=s.size;ctx.lineCap='round';ctx.lineJoin='round';
       if(l===1){ctx.arc(pts[0].x,pts[0].y,s.size/2,0,Math.PI*2);ctx.fillStyle=s.color;ctx.fill();}
       else{ctx.moveTo(pts[0].x,pts[0].y);pts.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.stroke();}
       ctx.restore();
@@ -7516,7 +7581,7 @@ function showTextOverlay(cx, cy){
   const x    = g.marginX;                 // toujours après la marge
   const y    = snapBaselineY(cy, g);      // calé sur une ligne
   const w    = defaultTextW(g);           // toute la largeur utile
-  _placeTextOverlay(div, x, y, w, size, lh, S.color, S.bold);
+  _placeTextOverlay(div, x, y, w, size, lh, inkColor(S.color), S.bold);
   div.innerHTML = '';
   S.activeText = true; S.editingIdx = -1;
   S._textX = x; S._textY = y; S._textW = w; S._textSizeUsed = size;
@@ -7533,7 +7598,7 @@ function startEditTxt(idx){
   const size = s.size || currentTextSize(g);
   const lh   = textLineH(size, g);
   const w    = s.w || defaultTextW(g);
-  _placeTextOverlay(div, s.x, s.y, w, size, lh, s.color || S.color, s.bold);
+  _placeTextOverlay(div, s.x, s.y, w, size, lh, inkColor(s.color || S.color), s.bold);
   div.innerHTML = s.html || _textToHtml(s.text || '', s);
   div.querySelectorAll('img.fx-inline').forEach(_bindFxImg);
   S.activeText = true; S.editingIdx = idx;
@@ -7839,7 +7904,7 @@ function _parseHtmlRuns(html, defaultSize, defaultColor){
 function _drawRichText(ctx, s){
   const g         = pageGeom();
   const baseSize  = s.size || autoTextSize(g);
-  const baseColor = s.color || '#1E1B4B';
+  const baseColor = inkColor(s.color || LIGHT_INK);
   const maxW      = s.w || defaultTextW(g);
   const runs = s.html
     ? _parseHtmlRuns(s.html, baseSize, baseColor)
@@ -7858,18 +7923,18 @@ function _drawRichText(ctx, s){
         const m = mathMeasure(run.fx, run.fxSize || sz);
         ctx.save();
         ctx.translate(x, y - sz*0.72 + (sz*0.96 - m.h)/2);
-        _mlDraw(ctx, m.tree, 0, m.a, run.color || baseColor);
+        _mlDraw(ctx, m.tree, 0, m.a, run.color ? inkColor(run.color) : baseColor);
         ctx.restore();
         x += (run.fxW || m.w);
         return;
       }
       ctx.font = (run.bold?'bold ':'') + (run.italic?'italic ':'') + sz + 'px ' + (S.a11yFont||'Nunito,sans-serif');
-      ctx.fillStyle = run.color || baseColor;
+      ctx.fillStyle = run.color ? inkColor(run.color) : baseColor;
       ctx.fillText(run.text, x, y);
       const w = ctx.measureText(run.text).width;
       if(run.underline){
         ctx.beginPath();
-        ctx.strokeStyle = run.color || baseColor;
+        ctx.strokeStyle = run.color ? inkColor(run.color) : baseColor;
         ctx.lineWidth = Math.max(1, sz/16);
         ctx.moveTo(x, y+2); ctx.lineTo(x+w, y+2); ctx.stroke();
       }

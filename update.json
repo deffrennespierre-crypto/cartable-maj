@@ -1,15 +1,13 @@
 {
-  "version": "7.2.0",
+  "version": "7.2.1",
   "date": "2026-08-16",
   "notes": [
-    "export pdf mis à jour",
-    "correctif recherche avancée",
-    "nouveau modéle de page"
+    "Correctif mode sombre"
   ],
   "files": {
     "public/index.html": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
-      "sha256": "bba28015ac6874a5eaf02239176a62ccc0327aac627f4736cff3588efba9312f"
+      "sha256": "2c808960d32447da2c9abc066a9a87a046f32433fb4cf196a19457227a1c8fc0"
     },
     "public/splash.png": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",
@@ -17,7 +15,7 @@
     },
     "public/docs/Guide-eleve.pdf": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/docs/Guide-eleve.pdf",
-      "sha256": "ad14585dfdfe66babad719bcd6263ee2b67ad550820f12ef2cb70c55d03f02fb"
+      "sha256": "94c4310f072a3b43f6a370901800875fad76322a983b4566386cd418fd3c3297"
     },
     "public/docs/Note-parents.pdf": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/docs/Note-parents.pdf",
