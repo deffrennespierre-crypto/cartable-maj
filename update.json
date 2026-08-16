@@ -1,13 +1,13 @@
 {
-  "version": "7.1.3",
+  "version": "7.1.4",
   "date": "2026-08-16",
   "notes": [
-    "correctif fermeture IA"
+    "correctif ouverture page"
   ],
   "files": {
     "public/index.html": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
-      "sha256": "dc6ffd64fa6d563c657df42db20773b1e0222d912b3cea95da2d6f9f94f64125"
+      "sha256": "c79bf467d31a2b1860dfd42b22b3f846ecabda53c741e99d3518c9063adfc5f3"
     },
     "public/splash.png": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",
