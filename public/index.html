@@ -616,6 +616,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="bi btn-xs" onclick="toggleSubjectPanel()" data-tip="Afficher/cacher les matières">📚</button>
           <span id="editor-breadcrumb" style="font-size:11px;color:var(--tx2)">Sélectionne une séance</span>
           <div style="margin-left:auto;display:flex;gap:3px">
+            <button class="bi btn-xs" onclick="exportCanvasPDF()" data-tip="Exporter cette séance en PDF (en-tête, pagination, prêt à imprimer)" style="color:#059669;font-weight:800">📤 PDF</button>
             <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
             <button class="bi btn-xs" id="fullscreen-btn" onclick="toggleFullscreen()" data-tip="Agrandir la page pour écrire plus confortablement">⛶ Agrandir</button>
@@ -641,7 +642,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           </select>
           <div class="xdiv"></div>
           <button class="tb-btn" onclick="importImage()" data-tip="Importer une image (JPG, PNG, GIF) depuis le PC">🖼 Image</button>
-          <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📄 PDF</button>
+          <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📥 Importer PDF</button>
           <button class="tb-btn" id="mic-notes-btn" onclick="startVoiceNote()" data-tip="Dicter du texte à la voix — le résultat s'ajoute sur la page">🎤 Voix</button>
           <button class="tb-btn" onclick="readAloud()" data-tip="Lire à voix haute le texte sélectionné (ou toute la page)">🔊 Lire</button>
           <select id="bg-sel" onchange="setPageBg(this.value)" data-tip="Fond de page : lignes, petits carreaux, points ou blanc" style="font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--bd);font-family:var(--fn)">
@@ -655,7 +656,6 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           </select>
           <div class="xdiv"></div>
           <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer une structure : frise chronologique, tableau, Cornell, carte mentale">📐 Structure</button>
-          <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
           <div class="xdiv sci-tool"></div>
           <button class="tb-btn sci-tool" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
@@ -706,6 +706,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="bi btn-xs" onclick="exToggleSubjPanel()" data-tip="Afficher/cacher les matières">📚</button>
           <span id="ex-editor-breadcrumb" style="font-size:11px;color:var(--tx2)">Sélectionne un exercice</span>
           <div style="margin-left:auto;display:flex;gap:3px">
+            <button class="bi btn-xs" onclick="exportCanvasPDF()" data-tip="Exporter cette séance en PDF (en-tête, pagination, prêt à imprimer)" style="color:#059669;font-weight:800">📤 PDF</button>
             <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
             <button class="bi btn-xs" id="ex-fullscreen-btn" onclick="exToggleFS()" data-tip="Agrandir la page pour écrire plus confortablement">⛶ Agrandir</button>
@@ -731,7 +732,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           </select>
           <div class="xdiv"></div>
           <button class="tb-btn" onclick="importImage()" data-tip="Importer une image (JPG, PNG, GIF) depuis le PC">🖼 Image</button>
-          <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📄 PDF</button>
+          <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📥 Importer PDF</button>
           <button class="tb-btn" id="ex-mic-notes-btn" onclick="startVoiceNote()" data-tip="Dicter du texte à la voix — le résultat s'ajoute sur la page">🎤 Voix</button>
           <button class="tb-btn" onclick="readAloud()" data-tip="Lire à voix haute le texte sélectionné (ou toute la page)">🔊 Lire</button>
           <select id="ex-bg-sel" onchange="setPageBg(this.value)" data-tip="Fond de page : lignes, petits carreaux, points ou blanc" style="font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--bd);font-family:var(--fn)">
@@ -745,7 +746,6 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           </select>
           <div class="xdiv"></div>
           <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer une structure : frise chronologique, tableau, Cornell, carte mentale">📐 Structure</button>
-          <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ex-ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
           <div class="xdiv sci-tool"></div>
           <button class="tb-btn sci-tool" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
@@ -796,6 +796,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           <button class="bi btn-xs" onclick="evToggleSubjPanel()" data-tip="Afficher/cacher les matières">📚</button>
           <span id="ev-editor-breadcrumb" style="font-size:11px;color:var(--tx2)">Sélectionne une évaluation</span>
           <div style="margin-left:auto;display:flex;gap:3px">
+            <button class="bi btn-xs" onclick="exportCanvasPDF()" data-tip="Exporter cette séance en PDF (en-tête, pagination, prêt à imprimer)" style="color:#059669;font-weight:800">📤 PDF</button>
             <button class="bi btn-xs" onclick="revStart()" data-tip="Mode révision — masque les passages surlignés et teste-toi" style="color:var(--pr);font-weight:800">🙈 Réviser</button>
             <button class="bi btn-xs" onclick="clearCanvas()" data-tip="Effacer tout le contenu de la page" style="color:var(--er)">🧹 Effacer</button>
             <button class="bi btn-xs" id="ev-fullscreen-btn" onclick="evToggleFS()" data-tip="Agrandir la page pour écrire plus confortablement">⛶ Agrandir</button>
@@ -821,7 +822,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           </select>
           <div class="xdiv"></div>
           <button class="tb-btn" onclick="importImage()" data-tip="Importer une image (JPG, PNG, GIF) depuis le PC">🖼 Image</button>
-          <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📄 PDF</button>
+          <button class="tb-btn" onclick="importPDF()" data-tip="Importer un PDF — chaque page devient un élément déplaçable et redimensionnable">📥 Importer PDF</button>
           <button class="tb-btn" id="ev-mic-notes-btn" onclick="startVoiceNote()" data-tip="Dicter du texte à la voix — le résultat s'ajoute sur la page">🎤 Voix</button>
           <button class="tb-btn" onclick="readAloud()" data-tip="Lire à voix haute le texte sélectionné (ou toute la page)">🔊 Lire</button>
           <select id="ev-bg-sel" onchange="setPageBg(this.value)" data-tip="Fond de page : lignes, petits carreaux, points ou blanc" style="font-size:11px;padding:3px 6px;border-radius:5px;border:1px solid var(--bd);font-family:var(--fn)">
@@ -835,7 +836,6 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
           </select>
           <div class="xdiv"></div>
           <button class="tb-btn" onclick="openTemplateModal()" data-tip="Insérer une structure : frise chronologique, tableau, Cornell, carte mentale">📐 Structure</button>
-          <button class="tb-btn" onclick="exportCanvasPDF()" data-tip="Exporter la séance en PDF téléchargeable">📤 Export PDF</button>
           <button class="tb-btn" id="ev-ai-btn" onclick="triggerAI()" data-tip="Sélectionne du texte puis clique ici pour une explication IA" style="background:#10a37f;color:#fff;border-color:#10a37f">🤖 Expliquer</button>
           <div class="xdiv sci-tool"></div>
           <button class="tb-btn sci-tool" onclick="openEqTool()" data-tip="Éditeur d'équations — fractions, racines, puissances">∑ Équation</button>
@@ -1060,7 +1060,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         </div>
         <div class="stsec">
           <h3>🔄 Mises à jour</h3>
-          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.5.0</b></div>
+          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.5.2</b></div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
             <div style="flex:1;min-width:190px">
               <div style="font-size:13px;font-weight:700">Version installée : <span id="current-version" style="color:var(--pr)">…</span></div>
@@ -6293,9 +6293,15 @@ function _liveMarkText(ctx, s, idx, lines, lh, baseSize){
       const sz = run.size || baseSize;
       const txt = run.text || '';
       ctx.font = (run.bold?'bold ':'') + (run.italic?'italic ':'') + sz + 'px ' + (S.a11yFont||'Nunito,sans-serif');
-      // Position de ce fragment dans le texte brut
-      const at = plain.indexOf(txt, consumed);
-      const start = (at >= 0) ? at : consumed;
+      // Position de ce fragment dans le texte brut.
+      // Le word-wrap supprime les espaces en fin de ligne : on les saute
+      // pour rester aligné sur le texte d'origine.
+      while(consumed < plain.length && /\s/.test(plain[consumed]) && txt[0] !== plain[consumed]) consumed++;
+      let start = consumed;
+      if(plain.substr(start, txt.length) !== txt){
+        const at = plain.indexOf(txt, Math.max(0, consumed - 2));
+        if(at >= 0) start = at;
+      }
       const end = start + txt.length;
       consumed = end;
 
@@ -8960,7 +8966,7 @@ function _drawRichText(ctx, s, idx){
     y += lh;
   });
   // Souligne les fautes détectées (correction en direct)
-  if(idx !== undefined && !s.html) _liveMarkText(ctx, s, idx, lines, lh, baseSize);
+  if(idx !== undefined) _liveMarkText(ctx, s, idx, lines, lh, baseSize);
 
   // Mémorise la boîte pour la sélection et le hit-test
   s._w = maxW;
