@@ -1054,7 +1054,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         </div>
         <div class="stsec">
           <h3>🔄 Mises à jour</h3>
-          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.2.1</b></div>
+          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.2.2</b></div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
             <div style="flex:1;min-width:190px">
               <div style="font-size:13px;font-weight:700">Version installée : <span id="current-version" style="color:var(--pr)">…</span></div>
@@ -1605,7 +1605,10 @@ async function checkUpdate(silent){
   if(el) el.textContent = '⏳ Vérification…';
   try{
     const r = await api.get('/api/update/check');
-    if(cv) cv.textContent = r.current || '5.0.0';
+    if(cv) cv.textContent = r.current || '?';
+    // Le marqueur d'interface reflète le fichier réellement chargé
+    const ub = document.getElementById('ui-build');
+    if(ub && r.current) ub.textContent = r.current;
 
     if(r.offline || r.ok === false){
       var why = r.error || '';
