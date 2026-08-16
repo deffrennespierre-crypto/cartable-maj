@@ -103,6 +103,9 @@ cursor:pointer;border:1px solid transparent}
 .a11y-row input{margin-top:3px;flex-shrink:0}
 .a11y-row span{font-size:12px;line-height:1.5}
 .a11y-h{font-size:10.5px;color:var(--tx3);font-weight:400}
+.kb{background:var(--sf);border:1px solid var(--bd);border-bottom-width:2px;border-radius:4px;
+padding:1px 6px;font-family:Consolas,monospace;font-size:11px;font-weight:700;color:var(--pr)}
+.kbp{font-size:10px;color:var(--tx3)}
 .gl{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;
 padding:3px 8px;border-radius:20px;color:#fff}
 /* ══ ACCESSIBILITÉ / DYSLEXIE ══ */
@@ -312,6 +315,22 @@ body.edit-slots .slot-del{display:inline-flex}
 .save-ok{font-size:10px;font-weight:700;padding:3px 7px;border-radius:5px;background:#ECFDF5;color:#166534;display:none}
 
 /* ── Fullscreen modes ─────────────────── */
+/* ══ MODE AGRANDIR : la barre de pages doit rester visible ══ */
+#v-notes.fullscreen-mode, #v-exercises.ex-fullscreen-mode, #v-evaluations.ev-fullscreen-mode{
+  position:fixed;inset:0;z-index:200;background:var(--bg);
+  display:flex;flex-direction:column;overflow:hidden}
+/* le conteneur du canvas prend la place restante, jamais plus */
+#v-notes.fullscreen-mode .cw,
+#v-exercises.ex-fullscreen-mode .cw,
+#v-evaluations.ev-fullscreen-mode .cw{flex:1 1 auto;min-height:0;overflow:auto}
+/* la barre de pages reste collée en bas, toujours accessible */
+#v-notes.fullscreen-mode .page-bar,
+#v-exercises.ex-fullscreen-mode .page-bar,
+#v-evaluations.ev-fullscreen-mode .page-bar{
+  flex:0 0 auto;position:sticky;bottom:0;z-index:5;background:var(--sf2)}
+/* les colonnes internes doivent pouvoir rétrécir */
+#v-notes.fullscreen-mode > *, #v-exercises.ex-fullscreen-mode > *,
+#v-evaluations.ev-fullscreen-mode > *{min-height:0}
 #v-notes.fullscreen-mode .notes-subjects,
 #v-notes.fullscreen-mode .notes-tree{width:0!important;min-width:0!important;opacity:0!important;overflow:hidden!important;pointer-events:none!important}
 #v-exercises.ex-fullscreen-mode .notes-subjects,
@@ -471,6 +490,7 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
         <button class="nav-btn" data-view="journal" data-tip="Journal de bord — notes quotidiennes et humeur">📓 Journal</button>
         <button class="nav-btn" data-view="stats" data-tip="Statistiques — charge de travail et répartition des devoirs">📈 Statistiques</button>
         <button class="nav-btn" onclick="openPomodoro()" data-tip="Minuterie Pomodoro — 25min travail / 5min pause">🍅 Pomodoro</button>
+        <button class="nav-btn" onclick="openKbd()" data-tip="Liste des raccourcis clavier (touche F1)">⌨️ Raccourcis</button>
         <button class="nav-btn" onclick="openGramTool()" data-tip="Nature des mots — colorier verbes, noms, adjectifs…">🇫🇷 Nature des mots</button>
         <div id="sci-nav" style="display:none">
           <button class="nav-btn" onclick="openCalc()" data-tip="Calculatrice scientifique">🧮 Calculatrice</button>
@@ -628,6 +648,9 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
             <option value="lines">📄 Lignes</option>
             <option value="grid">▦ Carreaux</option>
             <option value="dots">·· Points</option>
+            <option value="seyes">📘 Seyès</option>
+            <option value="mm">📐 Millimétré</option>
+            <option value="music">🎵 Portées</option>
             <option value="blank">☐ Blanc</option>
           </select>
           <div class="xdiv"></div>
@@ -713,6 +736,9 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
             <option value="lines">📄 Lignes</option>
             <option value="grid">▦ Carreaux</option>
             <option value="dots">·· Points</option>
+            <option value="seyes">📘 Seyès</option>
+            <option value="mm">📐 Millimétré</option>
+            <option value="music">🎵 Portées</option>
             <option value="blank">☐ Blanc</option>
           </select>
           <div class="xdiv"></div>
@@ -798,6 +824,9 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
             <option value="lines">📄 Lignes</option>
             <option value="grid">▦ Carreaux</option>
             <option value="dots">·· Points</option>
+            <option value="seyes">📘 Seyès</option>
+            <option value="mm">📐 Millimétré</option>
+            <option value="music">🎵 Portées</option>
             <option value="blank">☐ Blanc</option>
           </select>
           <div class="xdiv"></div>
@@ -1342,6 +1371,15 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
   </div>
 </div>
 
+
+<!-- ══ AIDE RACCOURCIS ══ -->
+<div id="kbd-modal" class="tool-ov" onclick="if(event.target===this)closeKbd()">
+  <div class="tool-box" style="max-width:560px">
+    <div class="tool-hd"><span>⌨️ Raccourcis clavier</span><button class="bi btn-xs" onclick="closeKbd()">✕</button></div>
+    <div style="padding:14px" id="kbd-body"></div>
+  </div>
+</div>
+
 <!-- ══ POPOVER ÉPAISSEUR ══ -->
 <div id="size-pop"
   style="display:none;position:fixed;z-index:400;background:var(--sf);border:1.5px solid var(--pr);
@@ -1745,32 +1783,124 @@ function applyTemplate(type){
 // ═══════════════════════════════════════════════════════════════════
 // EXPORT PDF
 // ═══════════════════════════════════════════════════════════════════
-async function exportCanvasPDF(){
-  if(!S.canvas||!S.pages){_toast('⚠️ Ouvre une séance avant d\'exporter.','err');return;}
-  _toast('⏳ Génération du PDF...','ok');
-  // Save current canvas state
-  const curPage=S.curPage;
-  const allPages=S.pages;
-  // Build a jsPDF-like PDF using canvas toDataURL
-  // We'll create a multi-page PDF using browser's print or a data URI approach
-  // Simple approach: open all pages in a new window for printing
-  const pdfWin=window.open('','_blank');
-  if(!pdfWin){_toast('⚠️ Autorise les popups pour exporter.','err');return;}
-  let html='<!DOCTYPE html><html><head><title>Export Cartable</title><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#fff;}img{width:100%;max-width:1200px;display:block;page-break-after:always;margin:0 auto;}@media print{img{width:100%;height:auto;page-break-after:always;}}</style></head><body>';
-  // Render each page to canvas and get image
-  const origPage=S.curPage;
-  for(let i=0;i<allPages.length;i++){
-    S.curPage=i;
-    redrawCanvas();
-    await new Promise(r=>setTimeout(r,100));
-    const dataURL=S.canvas.toDataURL('image/png',0.92);
-    html+=`<img src="${dataURL}" alt="Page ${i+1}">`;
+// ═══════════════════════════════════════════════════════════════════
+// EXPORT PDF — mise en page A4 avec en-tête et pagination
+// ═══════════════════════════════════════════════════════════════════
+function _pdfContext(){
+  // Retrouve matière / chapitre / séance selon la vue courante
+  let subjId = null, sessId = null, list = [], chapters = [], lessons = [];
+  if(S.view === 'exercises'){
+    subjId = S.exSelSubjId; sessId = S.exSelSessId;
+    list = S.exSessions || []; chapters = S.exChapters || []; lessons = S.exLessons || [];
+  } else if(S.view === 'evaluations'){
+    subjId = S.evSelSubjId; sessId = S.evSelSessId;
+    list = S.evSessions || []; chapters = S.evChapters || []; lessons = S.evLessons || [];
+  } else {
+    subjId = S.selSubjectId; sessId = S.selSessionId;
+    list = S.sessions || []; chapters = S.chapters || []; lessons = S.lessons || [];
   }
-  S.curPage=origPage;redrawCanvas();
-  html+='<script>window.onload=()=>{window.print();}<\/script></body></html>';
-  pdfWin.document.write(html);
-  pdfWin.document.close();
-  _toast('✅ PDF prêt — utilise Ctrl+P pour sauvegarder.','ok');
+  const subj = (S.subjects || []).find(x => x.id === subjId) || null;
+  const sess = list.find(x => x.id === sessId) || null;
+  const chap = sess ? chapters.find(c => c.id === sess.chapter_id) : null;
+  const les  = chap ? lessons.find(l => l.id === chap.lesson_id) : null;
+  return { subj, sess, chap, les };
+}
+
+function _esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function exportCanvasPDF(){
+  if(!S.canvas || !S.pages || !S.pages.length){
+    _toast("⚠️ Ouvre une séance avant d'exporter.", 'err'); return;
+  }
+  if(S.activeText) commitText();
+
+  const win = window.open('', '_blank');
+  if(!win){ _toast('⚠️ Autorise les fenêtres popup pour exporter.', 'err'); return; }
+  win.document.write('<!DOCTYPE html><html><head><meta charset="utf-8">'
+    + '<title>Préparation…</title></head><body style="font-family:Segoe UI,Arial,sans-serif;'
+    + 'display:flex;align-items:center;justify-content:center;height:100vh;margin:0;color:#4F46E5">'
+    + '<div style="text-align:center"><div style="font-size:34px">🎒</div>'
+    + '<div style="font-weight:700;margin-top:8px">Préparation du PDF…</div></div></body></html>');
+
+  _toast('⏳ Génération du PDF…', 'ok');
+
+  const ctx = _pdfContext();
+  const titre = (ctx.sess && ctx.sess.title) || 'Séance';
+  const ligne2 = [ctx.les && ctx.les.title, ctx.chap && ctx.chap.title].filter(Boolean).join(' › ');
+  const matiere = (ctx.subj && ctx.subj.name) || '';
+  const couleur = (ctx.subj && ctx.subj.color) || '#4F46E5';
+  const icone   = (ctx.subj && ctx.subj.icon) || '📘';
+  const eleve   = (S.settings && S.settings.student_name) || '';
+  const classe  = (S.settings && S.settings.student_class) || '';
+  const dateStr = new Date().toLocaleDateString('fr-FR',
+                    {day:'2-digit', month:'long', year:'numeric'});
+
+  // Rendu de chaque page en image
+  const origPage = S.curPage;
+  const selIdx = S.selectedIdx, selIdxs = S.selectedIdxs;
+  S.selectedIdx = -1; S.selectedIdxs = [];      // pas de cadre de sélection dans le PDF
+  const images = [];
+  for(let i = 0; i < S.pages.length; i++){
+    S.curPage = i;
+    redrawCanvas();
+    await new Promise(r => setTimeout(r, 60));
+    images.push(S.canvas.toDataURL('image/png'));
+  }
+  S.curPage = origPage; S.selectedIdx = selIdx; S.selectedIdxs = selIdxs;
+  redrawCanvas();
+
+  const total = images.length;
+  let pages = '';
+  images.forEach(function(src, i){
+    pages +=
+      '<section class="pg">'
+      + '<header>'
+      +   '<div class="ttl"><span class="ico">' + _esc(icone) + '</span>'
+      +     '<div><div class="t1">' + _esc(titre) + '</div>'
+      +     (ligne2 ? '<div class="t2">' + _esc(ligne2) + '</div>' : '') + '</div></div>'
+      +   '<div class="meta">' + (matiere ? '<b>' + _esc(matiere) + '</b><br>' : '')
+      +     _esc(dateStr) + '</div>'
+      + '</header>'
+      + '<div class="cv"><img src="' + src + '" alt="Page ' + (i+1) + '"></div>'
+      + '<footer><span>' + _esc([eleve, classe].filter(Boolean).join(' — ')) + '</span>'
+      +   '<span>Page ' + (i+1) + ' / ' + total + '</span></footer>'
+      + '</section>';
+  });
+
+  const html =
+   '<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">'
+  + '<title>' + _esc(titre) + '</title><style>'
+  + '@page{size:A4;margin:10mm}'
+  + '*{margin:0;padding:0;box-sizing:border-box}'
+  + 'body{font-family:"Segoe UI",Arial,sans-serif;background:#E8E7F0;color:#1E1B4B}'
+  + '.pg{background:#fff;width:190mm;min-height:277mm;margin:8mm auto;padding:0 0 6mm;'
+  +   'display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.15);page-break-after:always}'
+  + '.pg:last-child{page-break-after:auto}'
+  + 'header{display:flex;justify-content:space-between;align-items:flex-start;gap:10mm;'
+  +   'padding:5mm 6mm 3mm;border-bottom:2.5px solid ' + couleur + '}'
+  + '.ttl{display:flex;gap:3mm;align-items:center}'
+  + '.ico{font-size:15pt}'
+  + '.t1{font-size:14pt;font-weight:700;line-height:1.2}'
+  + '.t2{font-size:9pt;color:#6B6B8C;margin-top:1mm}'
+  + '.meta{font-size:9pt;color:#6B6B8C;text-align:right;white-space:nowrap;line-height:1.5}'
+  + '.meta b{color:' + couleur + ';font-size:10pt}'
+  + '.cv{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:4mm 6mm}'
+  + '.cv img{max-width:100%;max-height:245mm;object-fit:contain}'
+  + 'footer{display:flex;justify-content:space-between;font-size:8pt;color:#9A94C8;'
+  +   'padding:2mm 6mm 0;border-top:1px solid #E7E4F5;margin:0 6mm}'
+  + '@media print{body{background:#fff}'
+  +   '.pg{width:auto;min-height:auto;margin:0;box-shadow:none}}'
+  + '</style></head><body>' + pages
+  + '<script>window.onload=function(){setTimeout(function(){window.print();},250);}<\/script>'
+  + '</body></html>';
+
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+  _toast('✅ PDF prêt — choisis « Enregistrer en PDF » dans la fenêtre d\'impression.', 'ok');
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1857,54 +1987,146 @@ function toggleSearch(force){
   if(show)setTimeout(()=>document.getElementById('global-search-input')?.focus(),50);
   else{document.getElementById('search-results').style.display='none';document.getElementById('global-search-input').value='';}
 }
-function doSearch(q){
-  const res=document.getElementById('search-results');
-  if(!q||q.length<2){res.style.display='none';return;}
-  q=q.toLowerCase();
-  const results=[];
-  // Search homework
-  (S.homework||[]).filter(h=>(h.title||'').toLowerCase().includes(q)||(h.description||'').toLowerCase().includes(q)).slice(0,4).forEach(h=>{
-    results.push({type:'Devoir',icon:'📋',label:h.title,sub:(h.due_date||''),action:()=>{switchView('homework');toggleSearch(false);}});
-  });
-  // Search subjects
-  (S.subjects||[]).filter(s=>(s.name||'').toLowerCase().includes(q)).slice(0,3).forEach(s=>{
-    results.push({type:'Matière',icon:s.icon||'📚',label:s.name,sub:'',action:()=>{switchView('notes');selectSubject(s.id);toggleSearch(false);}});
-  });
-  // Search notes: sessions + chapters + lessons
-  (S.sessions||[]).filter(s=>(s.title||'').toLowerCase().includes(q)).slice(0,3).forEach(s=>{
-    const ch=S.chapters.find(c=>c.id===s.chapter_id);
-    const sub=ch?S.subjects.find(x=>S.lessons.find(l=>l.id===ch.lesson_id&&l.subject_id===x.id)):null;
-    results.push({type:'Cours',icon:'📝',label:s.title,sub:sub?sub.name:'Cours & Notes',
-      action:()=>{switchView('notes');if(s.id)openSession(s.id);toggleSearch(false);}});
-  });
-  (S.chapters||[]).filter(c=>(c.title||'').toLowerCase().includes(q)).slice(0,3).forEach(c=>{
-    results.push({type:'Chapitre',icon:'📖',label:c.title,sub:'Cours & Notes',action:()=>{switchView('notes');toggleSearch(false);}});
-  });
-  // Search exercises
-  (S.exSessions||[]).filter(s=>(s.title||'').toLowerCase().includes(q)).slice(0,2).forEach(s=>{
-    results.push({type:'Exercice',icon:'✏️',label:s.title,sub:'Exercices',
-      action:()=>{switchView('exercises');if(s.id)exOpenSess(s.id);toggleSearch(false);}});
-  });
-  (S.exChapters||[]).filter(c=>(c.title||'').toLowerCase().includes(q)).slice(0,2).forEach(c=>{
-    results.push({type:'Ex-Chap.',icon:'✏️',label:c.title,sub:'Exercices',action:()=>{switchView('exercises');toggleSearch(false);}});
-  });
-  // Search evaluations
-  (S.evSessions||[]).filter(s=>(s.title||'').toLowerCase().includes(q)).slice(0,2).forEach(s=>{
-    results.push({type:'Éval.',icon:'📊',label:s.title,sub:'Évaluations',
-      action:()=>{switchView('evaluations');if(s.id)evOpenSess(s.id);toggleSearch(false);}});
-  });
-  (S.evChapters||[]).filter(c=>(c.title||'').toLowerCase().includes(q)).slice(0,2).forEach(c=>{
-    results.push({type:'Év-Chap.',icon:'📊',label:c.title,sub:'Évaluations',action:()=>{switchView('evaluations');toggleSearch(false);}});
-  });
-  if(!results.length){res.innerHTML='<div class="sr-item" style="color:var(--tx3)">Aucun résultat</div>';res.style.display='block';return;}
-  res.innerHTML=results.map((r,i)=>`<div class="sr-item" onclick="window._sr_actions[${i}]()">
-    <span style="font-size:16px">${r.icon}</span>
-    <div style="flex:1;min-width:0"><div style="font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.label}</div>${r.sub?`<div style="font-size:10px;color:var(--tx3)">${r.sub}</div>`:''}</div>
-    <span class="sr-tag">${r.type}</span>
-  </div>`).join('');
-  window._sr_actions=results.map(r=>r.action);
-  res.style.display='block';
+// ═══════════════════════════════════════════════════════════════════
+// RECHERCHE GLOBALE — titres ET contenu des pages, avec extrait
+// ═══════════════════════════════════════════════════════════════════
+function _srNorm(s){
+  // insensible aux accents et à la casse
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
+function _srHl(text, q){
+  // Surligne le terme trouvé dans l'extrait
+  const nt = _srNorm(text), nq = _srNorm(q);
+  const p = nt.indexOf(nq);
+  const esc = t => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if(p < 0) return esc(text);
+  return esc(text.slice(0, p))
+    + '<mark style="background:#FDE047;color:#1E1B4B;border-radius:2px;padding:0 1px">'
+    + esc(text.slice(p, p + q.length)) + '</mark>'
+    + esc(text.slice(p + q.length));
+}
+// Extrait le texte d'une séance à partir de son canvas_data
+function _srSessionText(sess){
+  if(sess._srText !== undefined) return sess._srText;
+  let out = '';
+  try{
+    if(sess.canvas_data){
+      const d = JSON.parse(sess.canvas_data);
+      const pages = Array.isArray(d) ? [d] : (d && Array.isArray(d.pages) ? d.pages : []);
+      pages.forEach(function(pg){
+        (pg || []).forEach(function(s){
+          if(s && s.tool === 'text' && s.text) out += s.text + ' ';
+        });
+      });
+    }
+  }catch(e){}
+  sess._srText = out.trim();
+  return sess._srText;
+}
+// Construit un extrait centré sur le terme trouvé
+function _srSnippet(text, q, len){
+  len = len || 90;
+  const p = _srNorm(text).indexOf(_srNorm(q));
+  if(p < 0) return text.slice(0, len);
+  const start = Math.max(0, p - Math.floor(len / 3));
+  const end   = Math.min(text.length, start + len);
+  return (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
+}
+
+function doSearch(q){
+  const res = document.getElementById('search-results');
+  if(!q || q.trim().length < 2){ res.style.display = 'none'; return; }
+  const raw = q.trim();
+  const nq  = _srNorm(raw);
+  const hit = t => _srNorm(t).includes(nq);
+  const results = [];
+
+  // ── Devoirs ──
+  (S.homework || []).filter(h => hit(h.title) || hit(h.description)).slice(0, 4).forEach(function(h){
+    const src = hit(h.title) ? h.title : (h.description || '');
+    results.push({type:'Devoir', icon:'📋', label:h.title,
+      sub: h.due_date ? ('à rendre le ' + h.due_date) : '',
+      snip: hit(h.description) ? _srSnippet(h.description, raw) : '',
+      action:()=>{ switchView('homework'); toggleSearch(false); }});
+  });
+
+  // ── Matières ──
+  (S.subjects || []).filter(s => hit(s.name)).slice(0, 3).forEach(function(s){
+    results.push({type:'Matière', icon:s.icon || '📚', label:s.name, sub:'', snip:'',
+      action:()=>{ switchView('notes'); selectSubject(s.id); toggleSearch(false); }});
+  });
+
+  // ── Séances : titre ET contenu des pages ──
+  const vues = [
+    {list:S.sessions,   chaps:S.chapters,   less:S.lessons,   type:'Cours',      icon:'📝', view:'notes',       open:id=>openSession(id)},
+    {list:S.exSessions, chaps:S.exChapters, less:S.exLessons, type:'Exercice',   icon:'✏️', view:'exercises',   open:id=>exOpenSess(id)},
+    {list:S.evSessions, chaps:S.evChapters, less:S.evLessons, type:'Évaluation', icon:'📊', view:'evaluations', open:id=>evOpenSess(id)}
+  ];
+  vues.forEach(function(v){
+    (v.list || []).forEach(function(s){
+      const inTitle = hit(s.title);
+      const txt = _srSessionText(s);
+      const inBody = txt && hit(txt);
+      if(!inTitle && !inBody) return;
+      const ch  = (v.chaps || []).find(c => c.id === s.chapter_id);
+      const les = ch ? (v.less || []).find(l => l.id === ch.lesson_id) : null;
+      const sub = les ? (S.subjects || []).find(x => x.id === les.subject_id) : null;
+      results.push({
+        type: v.type, icon: v.icon, label: s.title,
+        sub: [sub && sub.name, ch && ch.title].filter(Boolean).join(' › '),
+        snip: inBody ? _srSnippet(txt, raw) : '',
+        action:()=>{ switchView(v.view); if(s.id) v.open(s.id); toggleSearch(false); }
+      });
+    });
+  });
+
+  // ── Chapitres ──
+  [[S.chapters,'notes'], [S.exChapters,'exercises'], [S.evChapters,'evaluations']].forEach(function(p){
+    (p[0] || []).filter(c => hit(c.title)).slice(0, 2).forEach(function(c){
+      results.push({type:'Chapitre', icon:'📖', label:c.title, sub:'', snip:'',
+        action:()=>{ switchView(p[1]); toggleSearch(false); }});
+    });
+  });
+
+  // ── Journal ──
+  (S.journal || []).filter(j => hit(j.text) || hit(j.title)).slice(0, 3).forEach(function(j){
+    results.push({type:'Journal', icon:'📔', label:(j.title || j.date || 'Note'),
+      sub:j.date || '', snip:hit(j.text) ? _srSnippet(j.text || '', raw) : '',
+      action:()=>{ switchView('journal'); toggleSearch(false); }});
+  });
+
+  // ── Priorité aux titres, puis limite ──
+  results.sort(function(a, b){ return (a.snip ? 1 : 0) - (b.snip ? 1 : 0); });
+  const shown = results.slice(0, 12);
+
+  if(!shown.length){
+    res.innerHTML = '<div style="padding:14px;text-align:center;color:var(--tx3);font-size:12px">'
+      + 'Aucun résultat pour « ' + _srHl(raw, raw) + ' »</div>';
+    res.style.display = 'block';
+    window._sr_actions = [];
+    return;
+  }
+
+  res.innerHTML = shown.map(function(r, i){
+    return '<div class="sr-item" onclick="window._sr_actions[' + i + ']()">'
+      + '<span style="font-size:15px;flex-shrink:0">' + r.icon + '</span>'
+      + '<div style="flex:1;min-width:0">'
+      +   '<div style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'
+      +     _srHl(r.label, raw) + '</div>'
+      +   (r.sub ? '<div style="font-size:10px;color:var(--tx3)">' + _srHl(r.sub, raw) + '</div>' : '')
+      +   (r.snip ? '<div style="font-size:10.5px;color:var(--tx2);margin-top:2px;line-height:1.4">'
+      +     _srHl(r.snip, raw) + '</div>' : '')
+      + '</div>'
+      + '<span class="sr-tag">' + r.type + '</span></div>';
+  }).join('')
+  + '<div style="padding:5px 10px;font-size:9.5px;color:var(--tx3);border-top:1px solid var(--bd)">'
+  + shown.length + ' résultat' + (shown.length > 1 ? 's' : '')
+  + (results.length > shown.length ? ' sur ' + results.length : '') + '</div>';
+
+  window._sr_actions = shown.map(r => r.action);
+  res.style.display = 'block';
+}
+
 // Ctrl+K shortcut
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='k'){e.preventDefault();toggleSearch();}});
 // Click outside to close
@@ -2431,8 +2653,23 @@ function handleConnectorClick(x, y){
 // ═══════════════════════════════════════════════════════════════════
 function initKeyboardShortcuts(){
   document.addEventListener('keydown', function(e){
+    if(e.key === 'F1'){ e.preventDefault(); openKbd(); return; }
     if(e.key === 'Escape'){
+      const km = document.getElementById('kbd-modal');
+      if(km && km.classList.contains('on')) km.classList.remove('on');
       if(Reader.playing) Reader.stop();
+      // Sortir du mode Agrandir : réflexe naturel de l'élève
+      const fsMap = [['v-notes','fullscreen-mode','fullscreen-btn'],
+                     ['v-exercises','ex-fullscreen-mode','ex-fullscreen-btn'],
+                     ['v-evaluations','ev-fullscreen-mode','ev-fullscreen-btn']];
+      fsMap.forEach(function(f){
+        const v = document.getElementById(f[0]);
+        if(v && v.classList.contains(f[1])){
+          v.classList.remove(f[1]);
+          const b = document.getElementById(f[2]);
+          if(b) b.textContent = '⛶ Agrandir';
+        }
+      });
       ['calc-modal','graph-modal','eq-modal','gram-modal'].forEach(function(id){
         const m = document.getElementById(id);
         if(m && m.classList.contains('on')) m.classList.remove('on');
@@ -3230,9 +3467,11 @@ function initEditor(sess,sub){
   }catch{}}
   if(!S.pages.length)S.pages=[[]];
   S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;
-  buildCanvas();renderPageBar();setupColorSwatches();
+  buildCanvas();
+  renderPageBar();
+  try{ setupColorSwatches(); }catch(e){ console.error('setupColorSwatches:', e); }
   const bgSel=document.getElementById('bg-sel');if(bgSel)bgSel.value=S.pageBg||'lines';
-  setTool('select');   // outil par défaut à l'ouverture d'une page
+  try{ setTool('select'); }catch(e){ console.error('setTool:', e); }
 }
 function buildCanvas(){
   // Pre-warm image cache for current page
@@ -3248,7 +3487,9 @@ function buildCanvas(){
   redrawCanvas();setupCanvasEvents();
 }
 function renderPageBar(){
-  const bar=document.getElementById('page-bar');bar.style.display='flex';
+  const bar=document.getElementById('page-bar');
+  if(!bar) return;                     // garde-fou : ne jamais interrompre le chargement
+  bar.style.display='flex';
   bar.innerHTML=S.pages.map((_,i)=>`<button class="ptab ${i===S.curPage?'active':''}" onclick="goPage(${i})" title="Aller à la page ${i+1}">Page ${i+1}</button>`).join('')
     +`<button class="ptab" onclick="addPage()" data-tip="Ajouter une nouvelle page vierge">+ Page</button>`;
 }
@@ -5066,6 +5307,66 @@ function _drawEraserCursor(x, y){
   ctx.restore();
 }
 
+
+// ═══════════════════════════════════════════════════════════════════
+// AIDE — raccourcis clavier
+// ═══════════════════════════════════════════════════════════════════
+const KBD_HELP = [
+  ['Partout', [
+    ['Ctrl','K', 'Rechercher dans tout le cartable'],
+    ['','F1',    'Afficher cette aide'],
+    ['','Échap', 'Fermer une fenêtre / quitter le mode Agrandir']
+  ]],
+  ['Sur une page', [
+    ['Ctrl','Z', 'Annuler'],
+    ['Ctrl','Y', 'Rétablir'],
+    ['Ctrl','C', 'Copier l\'élément sélectionné'],
+    ['Ctrl','V', 'Coller'],
+    ['','Suppr',  'Supprimer l\'élément sélectionné'],
+    ['Ctrl','molette', 'Zoomer / dézoomer']
+  ]],
+  ['Choisir un outil', [
+    ['Alt','1', 'Dessiner'],
+    ['Alt','2', 'Texte'],
+    ['Alt','3', 'Sélectionner'],
+    ['Alt','4', 'Gomme'],
+    ['Alt','5', 'Surligneur'],
+    ['Alt','6', 'Formes']
+  ]],
+  ['Quand on écrit du texte', [
+    ['Ctrl','B', 'Gras'],
+    ['Ctrl','I', 'Italique'],
+    ['Ctrl','U', 'Souligné'],
+    ['Ctrl','Entrée', 'Valider le texte'],
+    ['','Échap', 'Annuler la saisie']
+  ]],
+  ['Dans une formule', [
+    ['','Tab', 'Passer à la case suivante']
+  ]]
+];
+
+function openKbd(){
+  const body = document.getElementById('kbd-body');
+  if(body && !body._built){
+    body._built = true;
+    body.innerHTML = KBD_HELP.map(function(sec){
+      return '<div style="margin-bottom:13px">'
+        + '<div style="font-size:11px;font-weight:800;color:var(--pr);margin-bottom:5px;'
+        + 'text-transform:uppercase;letter-spacing:.4px">' + sec[0] + '</div>'
+        + sec[1].map(function(r){
+            const keys = (r[0] ? '<kbd class="kb">' + r[0] + '</kbd><span class="kbp">+</span>' : '')
+                       + '<kbd class="kb">' + r[1] + '</kbd>';
+            return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0">'
+              + '<span style="min-width:132px;display:inline-flex;align-items:center;gap:3px">' + keys + '</span>'
+              + '<span style="font-size:12px;color:var(--tx2)">' + r[2] + '</span></div>';
+          }).join('')
+        + '</div>';
+    }).join('');
+  }
+  _openTool('kbd-modal');
+}
+function closeKbd(){ _closeTool('kbd-modal'); }
+
 // ═══════════════════════════════════════════════════════════════════
 // INFOBULLES — une seule boîte, recadrée dans la fenêtre
 // ═══════════════════════════════════════════════════════════════════
@@ -5809,6 +6110,40 @@ function redrawCanvas(){
   } else if(bg==='dots'){
     ctx.fillStyle='#C8C4E0';const sz=22;
     for(let x=sz;x<c.width;x+=sz)for(let y=sz;y<c.height;y+=sz){ctx.beginPath();ctx.arc(x,y,1.2,0,Math.PI*2);ctx.fill();}
+  } else if(bg==='seyes'){
+    // Papier Seyès : grands carreaux 32px + interlignes fins 8px
+    ctx.strokeStyle='#DCE6F5';ctx.lineWidth=.5;
+    for(let y=8;y<c.height;y+=8){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
+    ctx.strokeStyle='#A8C0E0';ctx.lineWidth=.9;
+    for(let y=32;y<c.height;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
+    for(let x=78;x<=c.width;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}
+    ctx.strokeStyle='#F0B8C4';ctx.lineWidth=1.2;
+    ctx.beginPath();ctx.moveTo(78,0);ctx.lineTo(78,c.height);ctx.stroke();
+  } else if(bg==='mm'){
+    // Papier millimétré : 1mm clair, 5mm moyen, 10mm marqué
+    ctx.strokeStyle='#F2D9D9';ctx.lineWidth=.4;
+    for(let x=0;x<=c.width;x+=8){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}
+    for(let y=0;y<=c.height;y+=8){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
+    ctx.strokeStyle='#E0A8A8';ctx.lineWidth=.7;
+    for(let x=0;x<=c.width;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}
+    for(let y=0;y<=c.height;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
+    ctx.strokeStyle='#C87A7A';ctx.lineWidth=1;
+    for(let x=0;x<=c.width;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,c.height);ctx.stroke();}
+    for(let y=0;y<=c.height;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(c.width,y);ctx.stroke();}
+  } else if(bg==='music'){
+    // Portées musicales : 5 lignes, espacées, avec marge
+    ctx.strokeStyle='#4A4470';ctx.lineWidth=.9;
+    const gap=9, staff=gap*4, space=64;
+    for(let top=48; top+staff<c.height; top+=staff+space){
+      for(let k=0;k<5;k++){
+        const y=top+k*gap;
+        ctx.beginPath();ctx.moveTo(28,y);ctx.lineTo(c.width-28,y);ctx.stroke();
+      }
+      ctx.lineWidth=1.6;
+      ctx.beginPath();ctx.moveTo(28,top);ctx.lineTo(28,top+staff);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(c.width-28,top);ctx.lineTo(c.width-28,top+staff);ctx.stroke();
+      ctx.lineWidth=.9;
+    }
   }
 
   // ── SINGLE PASS in array order — position = z-order ────────────
@@ -5992,6 +6327,10 @@ async function saveCanvas(showOk=true){
       const el=document.getElementById(okId);
       if(el){el.style.display='inline';setTimeout(()=>{el.style.display='none';},2000);}
     }
+    // Le contenu a changé : vider le cache de la recherche
+    [S.sessions,S.exSessions,S.evSessions].forEach(function(l){
+      (l||[]).forEach(function(s){ delete s._srText; });
+    });
   }catch(err){console.error('saveCanvas error:',err);}
 }
 
@@ -6433,8 +6772,8 @@ function exInitEditor(sess,sub){
   // Build canvas in the exercises canvas wrap
   exBuildCanvas();
   exRenderPageBar();
-  exSetupSwatches();
-  setTool('select');   // outil par défaut à l'ouverture d'une page
+  try{ exSetupSwatches(); }catch(e){ console.error('exSetupSwatches:', e); }
+  try{ setTool('select'); }catch(e){ console.error('setTool:', e); }
 }
 
 function exBuildCanvas(){
@@ -6460,6 +6799,7 @@ function exBuildCanvas(){
 }
 
 function exRenderPageBar(){
+  
   const ids=exIds();
   const bar=document.getElementById(ids.pagebar);if(!bar)return;
   bar.style.display='flex';
@@ -6539,8 +6879,9 @@ function evInitEditor(sess,sub){
   if(sess.canvas_data){try{const p=JSON.parse(sess.canvas_data);if(Array.isArray(p))S.pages=[p];else if(p&&Array.isArray(p.pages))S.pages=p.pages;}catch{}}
   if(!S.pages.length)S.pages=[[]];
   S.selectedIdx=-1;S.selectedIdxs=[];S.editingIdx=-1;S.activeText=false;
-  evBuildCanvas();evRenderPageBar();evSetupSwatches();
-  setTool('select');   // outil par défaut à l'ouverture d'une page
+  evBuildCanvas();evRenderPageBar();
+  try{ evSetupSwatches(); }catch(e){ console.error('evSetupSwatches:', e); }
+  try{ setTool('select'); }catch(e){ console.error('setTool:', e); }
 }
 function evBuildCanvas(){
   const ids=evIds();gs().filter(s=>s.tool==='image').forEach(s=>_getCachedImg(s.src));
@@ -7030,6 +7371,9 @@ function pageGeom(){
   const bg = S.pageBg || 'lines';
   const W  = S.canvas ? S.canvas.width : 900;
   if(bg==='lines') return {bg, lineH:32, marginX:78, rightPad:24, W};
+  if(bg==='seyes') return {bg, lineH:32, marginX:86, rightPad:24, W};
+  if(bg==='mm')    return {bg, lineH:40, marginX:20, rightPad:20, W};
+  if(bg==='music') return {bg, lineH:36, marginX:32, rightPad:32, W};
   if(bg==='grid')  return {bg, lineH:36, marginX:20, rightPad:20, W};
   if(bg==='dots')  return {bg, lineH:44, marginX:22, rightPad:22, W};
   return {bg, lineH:32, marginX:20, rightPad:20, W}; // blank
