@@ -2,12 +2,12 @@
   "version": "7.2.1",
   "date": "2026-08-16",
   "notes": [
-    "Correctif mode sombre"
+    "Correctif modéles de pages"
   ],
   "files": {
     "public/index.html": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/index.html",
-      "sha256": "2c808960d32447da2c9abc066a9a87a046f32433fb4cf196a19457227a1c8fc0"
+      "sha256": "911000f396a888390414fd5d5858650e2be6d5abc2e15ebc0f66baad71b0f3fb"
     },
     "public/splash.png": {
       "url": "https://raw.githubusercontent.com/deffrennespierre-crypto/cartable-maj/main/public/splash.png",
