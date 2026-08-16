@@ -1059,8 +1059,20 @@ kbd{display:inline-flex;align-items:center;padding:1px 6px;border-radius:4px;bac
             <span><b>Règle de lecture</b><br><span class="a11y-h">Une bande jaune suit la souris pour ne pas perdre sa ligne</span></span></label>
         </div>
         <div class="stsec">
+          <h3>🔒 Mode examen</h3>
+          <p style="font-size:11px;color:var(--tx2);margin:-4px 0 10px;line-height:1.6">
+            Le mode examen bloque l'accès aux cours et aux exercices, et coupe le correcteur d'orthographe.
+            Un code de sortie empêche l'élève d'en sortir seul pendant l'épreuve.
+          </p>
+          <div class="fg">
+            <label class="fl">Code de sortie du mode examen (laisser vide pour aucun)</label>
+            <input class="fi" id="exam-password" type="text" placeholder="Ex. : 4271"
+                   autocomplete="off" style="max-width:200px;letter-spacing:2px;font-weight:700">
+          </div>
+        </div>
+        <div class="stsec">
           <h3>🔄 Mises à jour</h3>
-          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.5.2</b></div>
+          <div style="font-size:10px;color:var(--tx3);margin:-4px 0 8px">Interface : <b id="ui-build">7.5.4</b></div>
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
             <div style="flex:1;min-width:190px">
               <div style="font-size:13px;font-weight:700">Version installée : <span id="current-version" style="color:var(--pr)">…</span></div>
@@ -3568,6 +3580,7 @@ function initEditor(sess,sub){
   try{ setTool('select'); }catch(e){ console.error('setTool:', e); }
 }
 function buildCanvas(){
+  setTimeout(_setupHoverCursor, 0);   // survol des fautes
   // Pre-warm image cache for current page
   gs().filter(s=>s.tool==='image').forEach(s=>_getCachedImg(s.src));
   const wrap=document.getElementById('canvas-wrap');
@@ -6692,7 +6705,7 @@ function setTool(t){
   updateColorBtn();
   if(t!=='draw'&&t!=='highlight')closeSizePopover();
   if(!S.canvas)return;const cursors={draw:'crosshair',text:'text',erase:'cell',select:'default',multi:'crosshair',highlight:'crosshair',connector:'crosshair'};S.canvas.style.cursor=cursors[t]||'crosshair';
-  if(t==='select')_setupHoverCursor();
+  _setupHoverCursor();   // survol des fautes : actif avec tous les outils
   if(S.activeText&&t!=='text')commitText();
   if(t==='text')_syncRteSizeBtn();
   if(t!=='select'&&t!=='text'){hideTxtToolbar();hideImgTB();S.selectedIdx=-1;S.selectedIdxs=[];redrawCanvas()}
@@ -6713,7 +6726,15 @@ function _hoverHandle(e){
       if(S.canvas) S.canvas.style.cursor = 'help';
       return;
     }
-    if(LIVE.hover >= 0){ liveHidePopup(); }
+    if(LIVE.hover >= 0){
+      liveHidePopup();
+      // Rendre le curseur normal en quittant le mot souligné
+      if(S.canvas){
+        const cur = {draw:'crosshair',text:'text',erase:'cell',select:'default',
+                     highlight:'crosshair',connector:'crosshair'};
+        S.canvas.style.cursor = cur[S.tool] || 'crosshair';
+      }
+    }
   }
   if(S.tool!=='select'||S.drawing)return;
   const{x,y}=getXY(e);
@@ -7397,7 +7418,6 @@ async function importPDF(){
     }catch(err){alert('Erreur import PDF : '+err.message);}
   };inp.click();
 }
-function clearCanvas(){if(!confirm('Effacer la page '+String(S.curPage+1)+' ?'))return;S.pages[S.curPage]=[];redrawCanvas();scheduleAutoSave()}
 function scheduleAutoSave(){_snapshotUndo();if(S.saveTimer)clearTimeout(S.saveTimer);S.saveTimer=setTimeout(()=>saveCanvas(false),3000)}
 async function saveCanvas(showOk=true){
   if(!S.saveSessionId)return;
@@ -7861,6 +7881,7 @@ function exInitEditor(sess,sub){
 }
 
 function exBuildCanvas(){
+  setTimeout(_setupHoverCursor, 0);   // survol des fautes
   // Pre-warm image cache for current page
   gs().filter(s=>s.tool==='image').forEach(s=>_getCachedImg(s.src));
   const ids=exIds();
@@ -7899,15 +7920,6 @@ function exSetupSwatches(){
   if(bgsel && !bgsel._wired){ bgsel._wired=true; bgsel.addEventListener('change',e=>setPageBg(e.target.value)); }
   updateColorBtn();
 }
-
-function exUpdSwatches(){
-  document.querySelectorAll('.cs').forEach(function(el){
-    el.classList.toggle('active', el.dataset.color===S.color);
-  });
-  var cc=document.getElementById('ex-custom-color');
-  if(cc)cc.value=S.color;
-}
-
 
 // ═══════════════════════════════════════════════════════════════════
 // ÉVALUATIONS — miroir de Exercices avec données séparées
@@ -7968,6 +7980,7 @@ function evInitEditor(sess,sub){
   try{ setTool('select'); }catch(e){ console.error('setTool:', e); }
 }
 function evBuildCanvas(){
+  setTimeout(_setupHoverCursor, 0);   // survol des fautes
   const ids=evIds();gs().filter(s=>s.tool==='image').forEach(s=>_getCachedImg(s.src));
   const wrap=document.getElementById(ids.canvasWrap);if(!wrap)return;
   let txo=document.getElementById(ids.txo);if(txo&&txo.parentElement===wrap)wrap.removeChild(txo);
@@ -7986,15 +7999,6 @@ function evSetupSwatches(){
   if(bgsel && !bgsel._wired){ bgsel._wired=true; bgsel.addEventListener('change',e=>setPageBg(e.target.value)); }
   updateColorBtn();
 }
-function evUpdSwatches(){
-  document.querySelectorAll('.cs').forEach(function(el){
-    el.classList.toggle('active', el.dataset.color===S.color);
-  });
-  var cc=document.getElementById('ev-custom-color');
-  if(cc)cc.value=S.color;
-}
-
-
 // ── Canvas utility functions ──────────────────────────────────────
 function deleteSelectedStroke(){
   const idxs = S.selectedIdxs.length ? S.selectedIdxs : (S.selectedIdx>=0 ? [S.selectedIdx] : []);
@@ -8003,9 +8007,6 @@ function deleteSelectedStroke(){
   S.selectedIdx=-1; S.selectedIdxs=[];
   hideTxtToolbar(); hideImgTB();
   redrawCanvas(); scheduleAutoSave();
-}
-function startEditSelected(){
-  if(S.selectedIdx>=0 && gs()[S.selectedIdx]?.tool==='text') startEditTxt(S.selectedIdx);
 }
 function clearCanvas(){
   if(!confirm('Effacer toute la page ?')) return;
